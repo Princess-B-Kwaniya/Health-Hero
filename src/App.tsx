@@ -27,7 +27,7 @@ export default function App() {
   const totalHealthy = Object.values(foodGroupCounts).reduce((a, b) => a + b, 0);
 
   return (
-    <div className="relative w-full h-screen bg-amber-50 overflow-hidden" style={{ fontFamily: "'Nunito', 'Quicksand', sans-serif" }}>
+    <div className="relative w-full h-screen bg-[#1B2838] overflow-hidden" style={{ fontFamily: "'Fredoka One', 'Nunito', sans-serif" }}>
       <Game />
 
       {/* Visual effect overlays from junk food */}
@@ -48,27 +48,27 @@ export default function App() {
       {status === 'playing' && (
         <>
           <div className="absolute top-0 left-0 w-full p-4 flex justify-between items-start pointer-events-none">
-            {/* Top-Left: HeroPoints */}
-            <div className="bg-white/70 backdrop-blur-sm rounded-2xl px-4 py-2 border border-green-200 shadow-md flex items-center gap-2">
-              <div className="w-6 h-6 rounded-full flex items-center justify-center text-xs font-black" style={{ background: '#4CAF50', color: 'white' }}>HP</div>
-              <span className="font-mono text-xl font-black" style={{ color: '#4CAF50' }}>{Math.floor(heroPoints)}</span>
+            {/* Top-Left: HeroPoints — Roblox dark panel style */}
+            <div className="bg-black/60 backdrop-blur-sm rounded-lg px-4 py-2 border border-white/10 shadow-lg flex items-center gap-2">
+              <div className="w-7 h-7 rounded flex items-center justify-center text-xs font-black" style={{ background: '#00E639', color: '#000' }}>HP</div>
+              <span className="font-mono text-xl font-black" style={{ color: '#00E639' }}>{Math.floor(heroPoints)}</span>
               {comboMultiplierActive && (
-                <span className="text-xs font-bold px-2 py-0.5 rounded-full animate-bounce" style={{ background: '#FFD54F', color: '#8D6E63' }}>2x</span>
+                <span className="text-xs font-bold px-2 py-0.5 rounded animate-bounce" style={{ background: '#FFD000', color: '#000' }}>2x</span>
               )}
             </div>
 
             {/* Top-Center: Distance */}
-            <div className="bg-white/50 backdrop-blur-sm rounded-xl px-3 py-1 border border-amber-100 flex items-center gap-1">
-              <Footprints className="w-4 h-4" style={{ color: '#8D6E63' }} />
-              <span className="font-mono text-sm font-bold" style={{ color: '#8D6E63' }}>{Math.floor(distance)}m</span>
+            <div className="bg-black/60 backdrop-blur-sm rounded-lg px-3 py-1.5 border border-white/10 flex items-center gap-1">
+              <Footprints className="w-4 h-4" style={{ color: '#FFD000' }} />
+              <span className="font-mono text-sm font-bold" style={{ color: '#FFD000' }}>{Math.floor(distance)}m</span>
             </div>
 
-            {/* Top-Right: Health Meter */}
-            <div className={`bg-white/70 backdrop-blur-sm rounded-2xl px-4 py-2 border shadow-md flex items-center gap-2 ${healthPulse}`} style={{ borderColor: healthColor + '44' }}>
+            {/* Top-Right: Health Meter — Roblox green bar */}
+            <div className={`bg-black/60 backdrop-blur-sm rounded-lg px-4 py-2 border border-white/10 shadow-lg flex items-center gap-2 ${healthPulse}`}>
               <Heart className="w-5 h-5" style={{ color: healthColor, fill: healthColor }} />
-              <div className="w-24 h-3 rounded-full overflow-hidden" style={{ background: '#FFF8E1' }}>
+              <div className="w-24 h-3 rounded overflow-hidden" style={{ background: '#1A1A2E' }}>
                 <div
-                  className="h-full rounded-full transition-all duration-300"
+                  className="h-full rounded transition-all duration-300"
                   style={{ width: `${healthMeter}%`, background: healthColor }}
                 />
               </div>
@@ -76,15 +76,15 @@ export default function App() {
             </div>
           </div>
 
-          {/* NutriFact Pop-up — top-right, compact */}
+          {/* NutriFact Pop-up — Roblox notification style */}
           {activeFact && (
             <div className="absolute top-16 right-4 pointer-events-none z-10">
               <div
-                className="rounded-xl px-3 py-1.5 shadow-md border text-xs font-bold"
+                className="rounded-lg px-3 py-1.5 shadow-lg border text-xs font-bold"
                 style={{
-                  background: activeFact.isHealthy ? '#E8F5E9' : '#FFEBEE',
-                  borderColor: activeFact.isHealthy ? '#4CAF50' : '#EF5350',
-                  color: activeFact.isHealthy ? '#2E7D32' : '#C62828',
+                  background: activeFact.isHealthy ? 'rgba(0,230,57,0.9)' : 'rgba(255,60,60,0.9)',
+                  borderColor: activeFact.isHealthy ? '#00FF41' : '#FF4444',
+                  color: '#FFFFFF',
                 }}
               >
                 {activeFact.isHealthy ? `+ ${activeFact.item}` : `- ${activeFact.item}`}
@@ -92,10 +92,10 @@ export default function App() {
             </div>
           )}
 
-          {/* Combo Message — top-right below fact */}
+          {/* Combo Message — Roblox style */}
           {comboMultiplierActive && comboMessage && (
             <div className="absolute top-24 right-4 pointer-events-none z-10">
-              <div className="rounded-xl px-3 py-1 shadow-md text-xs font-black" style={{ background: '#FFD54F', color: '#8D6E63' }}>
+              <div className="rounded-lg px-3 py-1 shadow-lg text-xs font-black" style={{ background: '#FFD000', color: '#000' }}>
                 {comboMessage} 2x
               </div>
             </div>
@@ -103,44 +103,44 @@ export default function App() {
         </>
       )}
 
-      {/* Start Screen */}
+      {/* Start Screen — Roblox-style dark modal */}
       {status === 'start' && (
-        <div className="absolute inset-0 flex items-center justify-center" style={{ background: 'rgba(255,248,225,0.7)', backdropFilter: 'blur(4px)' }}>
-          <div className="rounded-3xl p-8 max-w-sm w-full text-center shadow-2xl border" style={{ background: '#FFF8E1', borderColor: '#FFD54F' }}>
-            <h1 className="text-4xl font-black mb-1 uppercase tracking-tight" style={{ color: '#4CAF50' }}>Health Hero</h1>
-            <p className="text-lg font-bold mb-1" style={{ color: '#FF9800' }}>The Healthy Runner</p>
-            <p className="mb-6 font-medium text-sm" style={{ color: '#8D6E63' }}>Collect healthy food, dodge junk food, and learn about nutrition!</p>
+        <div className="absolute inset-0 flex items-center justify-center" style={{ background: 'rgba(0,0,0,0.65)', backdropFilter: 'blur(6px)' }}>
+          <div className="rounded-xl p-8 max-w-sm w-full text-center shadow-2xl border" style={{ background: '#2A2A3E', borderColor: '#3D3D5C' }}>
+            <h1 className="text-4xl font-black mb-1 uppercase tracking-tight" style={{ color: '#00E639' }}>Health Hero</h1>
+            <p className="text-lg font-bold mb-1" style={{ color: '#FFD000' }}>The Healthy Runner</p>
+            <p className="mb-6 font-medium text-sm" style={{ color: '#A0A0C0' }}>Collect healthy food, dodge junk food, and learn about nutrition!</p>
 
-            <div className="space-y-3 mb-6 text-left rounded-2xl p-4 border" style={{ background: 'white', borderColor: '#C8E6C9' }}>
-              <div className="flex items-center gap-3" style={{ color: '#4CAF50' }}>
-                <kbd className="border rounded px-2 py-1 font-mono text-sm shadow-sm" style={{ background: '#E8F5E9', borderColor: '#A5D6A7' }}>A / D</kbd>
+            <div className="space-y-3 mb-6 text-left rounded-lg p-4 border" style={{ background: '#1A1A2E', borderColor: '#3D3D5C' }}>
+              <div className="flex items-center gap-3" style={{ color: '#00E639' }}>
+                <kbd className="border rounded px-2 py-1 font-mono text-sm shadow-sm" style={{ background: '#2A2A3E', borderColor: '#3D3D5C', color: '#FFFFFF' }}>A / D</kbd>
                 <span className="text-sm font-medium">Move Left / Right</span>
               </div>
-              <div className="flex items-center gap-3" style={{ color: '#4CAF50' }}>
-                <kbd className="border rounded px-2 py-1 font-mono text-sm shadow-sm" style={{ background: '#E8F5E9', borderColor: '#A5D6A7' }}>W</kbd>
+              <div className="flex items-center gap-3" style={{ color: '#00E639' }}>
+                <kbd className="border rounded px-2 py-1 font-mono text-sm shadow-sm" style={{ background: '#2A2A3E', borderColor: '#3D3D5C', color: '#FFFFFF' }}>W</kbd>
                 <span className="text-sm font-medium">Jump</span>
               </div>
-              <div className="flex items-center gap-3" style={{ color: '#4CAF50' }}>
-                <kbd className="border rounded px-2 py-1 font-mono text-sm shadow-sm" style={{ background: '#E8F5E9', borderColor: '#A5D6A7' }}>S</kbd>
+              <div className="flex items-center gap-3" style={{ color: '#00E639' }}>
+                <kbd className="border rounded px-2 py-1 font-mono text-sm shadow-sm" style={{ background: '#2A2A3E', borderColor: '#3D3D5C', color: '#FFFFFF' }}>S</kbd>
                 <span className="text-sm font-medium">Roll / Slide</span>
               </div>
             </div>
 
             <div className="grid grid-cols-3 gap-2 mb-6">
               {FOOD_GROUPS.map((fg) => (
-                <div key={fg} className="rounded-xl px-2 py-1.5 text-center border" style={{ background: FOOD_GROUP_COLORS[fg] + '22', borderColor: FOOD_GROUP_COLORS[fg] + '44' }}>
-                  <div className="w-3 h-3 rounded-full mx-auto mb-0.5" style={{ background: FOOD_GROUP_COLORS[fg] }} />
-                  <div className="text-xs font-bold" style={{ color: '#8D6E63' }}>{FOOD_GROUP_LABELS[fg]}</div>
+                <div key={fg} className="rounded-lg px-2 py-1.5 text-center border" style={{ background: FOOD_GROUP_COLORS[fg] + '22', borderColor: FOOD_GROUP_COLORS[fg] + '44' }}>
+                  <div className="w-3 h-3 rounded mx-auto mb-0.5" style={{ background: FOOD_GROUP_COLORS[fg] }} />
+                  <div className="text-xs font-bold" style={{ color: '#C0C0E0' }}>{FOOD_GROUP_LABELS[fg]}</div>
                 </div>
               ))}
             </div>
 
             <button
               onClick={startGame}
-              className="w-full text-white rounded-2xl py-4 font-bold text-lg flex items-center justify-center gap-2 transition-colors shadow-lg"
-              style={{ background: '#4CAF50', boxShadow: '0 8px 20px rgba(76,175,80,0.3)' }}
-              onMouseEnter={(e) => e.currentTarget.style.background = '#388E3C'}
-              onMouseLeave={(e) => e.currentTarget.style.background = '#4CAF50'}
+              className="w-full text-white rounded-lg py-4 font-bold text-lg flex items-center justify-center gap-2 transition-all shadow-lg uppercase tracking-wide"
+              style={{ background: 'linear-gradient(180deg, #00E639 0%, #00B82E 100%)', boxShadow: '0 6px 20px rgba(0,230,57,0.35)' }}
+              onMouseEnter={(e) => e.currentTarget.style.background = 'linear-gradient(180deg, #00FF41 0%, #00CC33 100%)'}
+              onMouseLeave={(e) => e.currentTarget.style.background = 'linear-gradient(180deg, #00E639 0%, #00B82E 100%)'}
             >
               <Play className="w-5 h-5 fill-current" />
               START RUNNING!
@@ -149,34 +149,34 @@ export default function App() {
         </div>
       )}
 
-      {/* Game Over / Run Summary Screen (FR-032) */}
+      {/* Game Over / Run Summary — Roblox-style dark modal */}
       {status === 'gameover' && (
-        <div className="absolute inset-0 flex items-center justify-center" style={{ background: 'rgba(255,248,225,0.7)', backdropFilter: 'blur(4px)' }}>
-          <div className="rounded-3xl p-6 max-w-md w-full text-center shadow-2xl border" style={{ background: '#FFF8E1', borderColor: '#FFD54F' }}>
-            <h2 className="text-3xl font-black mb-1 uppercase tracking-tight" style={{ color: '#FF9800' }}>Run Summary</h2>
-            <p className="mb-4 font-medium text-sm" style={{ color: '#8D6E63' }}>
+        <div className="absolute inset-0 flex items-center justify-center" style={{ background: 'rgba(0,0,0,0.65)', backdropFilter: 'blur(6px)' }}>
+          <div className="rounded-xl p-6 max-w-md w-full text-center shadow-2xl border" style={{ background: '#2A2A3E', borderColor: '#3D3D5C' }}>
+            <h2 className="text-3xl font-black mb-1 uppercase tracking-tight" style={{ color: '#FFD000' }}>Run Summary</h2>
+            <p className="mb-4 font-medium text-sm" style={{ color: '#A0A0C0' }}>
               {healthMeter <= 0 ? 'Your health ran out! Eat more healthy food next time!' : 'You bumped into a wall! Try to dodge next time!'}
             </p>
 
-            {/* Score row */}
+            {/* Score row — Roblox stat cards */}
             <div className="grid grid-cols-3 gap-3 mb-4">
-              <div className="rounded-2xl p-3 border" style={{ background: '#E8F5E9', borderColor: '#A5D6A7' }}>
-                <div className="text-xs font-bold uppercase tracking-wider mb-1" style={{ color: '#4CAF50' }}>HeroPoints</div>
-                <div className="text-2xl font-black" style={{ color: '#2E7D32' }}>{Math.floor(heroPoints)}</div>
+              <div className="rounded-lg p-3 border" style={{ background: '#1A1A2E', borderColor: '#00E639' }}>
+                <div className="text-xs font-bold uppercase tracking-wider mb-1" style={{ color: '#00E639' }}>HeroPoints</div>
+                <div className="text-2xl font-black" style={{ color: '#FFFFFF' }}>{Math.floor(heroPoints)}</div>
               </div>
-              <div className="rounded-2xl p-3 border" style={{ background: '#E3F2FD', borderColor: '#90CAF9' }}>
-                <div className="text-xs font-bold uppercase tracking-wider mb-1" style={{ color: '#42A5F5' }}>Distance</div>
-                <div className="text-2xl font-black" style={{ color: '#1565C0' }}>{Math.floor(distance)}m</div>
+              <div className="rounded-lg p-3 border" style={{ background: '#1A1A2E', borderColor: '#00A2FF' }}>
+                <div className="text-xs font-bold uppercase tracking-wider mb-1" style={{ color: '#00A2FF' }}>Distance</div>
+                <div className="text-2xl font-black" style={{ color: '#FFFFFF' }}>{Math.floor(distance)}m</div>
               </div>
-              <div className="rounded-2xl p-3 border" style={{ background: '#FFF3E0', borderColor: '#FFB74D' }}>
-                <div className="text-xs font-bold uppercase tracking-wider mb-1" style={{ color: '#FF9800' }}>Clean Run</div>
-                <div className="text-2xl font-black" style={{ color: '#E65100' }}>{Math.floor(longestCleanRun)}m</div>
+              <div className="rounded-lg p-3 border" style={{ background: '#1A1A2E', borderColor: '#FFD000' }}>
+                <div className="text-xs font-bold uppercase tracking-wider mb-1" style={{ color: '#FFD000' }}>Clean Run</div>
+                <div className="text-2xl font-black" style={{ color: '#FFFFFF' }}>{Math.floor(longestCleanRun)}m</div>
               </div>
             </div>
 
             {/* Food groups collected */}
-            <div className="rounded-2xl p-3 border mb-4" style={{ background: 'white', borderColor: '#C8E6C9' }}>
-              <div className="text-xs font-bold uppercase tracking-wider mb-2" style={{ color: '#4CAF50' }}>
+            <div className="rounded-lg p-3 border mb-4" style={{ background: '#1A1A2E', borderColor: '#3D3D5C' }}>
+              <div className="text-xs font-bold uppercase tracking-wider mb-2" style={{ color: '#00E639' }}>
                 Food Groups Collected ({totalHealthy} items)
               </div>
               <div className="grid grid-cols-3 gap-2">
@@ -184,18 +184,18 @@ export default function App() {
                   const count = foodGroupCounts[fg];
                   return (
                     <div key={fg} className="flex items-center gap-1.5">
-                      <div className="w-3 h-3 rounded-full flex-shrink-0" style={{ background: FOOD_GROUP_COLORS[fg] }} />
-                      <span className="text-xs font-bold truncate" style={{ color: '#8D6E63' }}>
+                      <div className="w-3 h-3 rounded flex-shrink-0" style={{ background: FOOD_GROUP_COLORS[fg] }} />
+                      <span className="text-xs font-bold truncate" style={{ color: '#A0A0C0' }}>
                         {FOOD_GROUP_LABELS[fg]}
                       </span>
-                      <span className="text-xs font-black ml-auto" style={{ color: count > 0 ? '#4CAF50' : '#BDBDBD' }}>
+                      <span className="text-xs font-black ml-auto" style={{ color: count > 0 ? '#00E639' : '#555' }}>
                         {count}
                       </span>
                     </div>
                   );
                 })}
               </div>
-              {/* Simple bar chart */}
+              {/* Bar chart */}
               <div className="mt-2 flex gap-1 h-8 items-end">
                 {FOOD_GROUPS.map((fg) => {
                   const count = foodGroupCounts[fg];
@@ -216,17 +216,17 @@ export default function App() {
             {/* Junk contacts */}
             <div className="flex justify-center gap-4 mb-4 text-sm">
               <div className="flex items-center gap-1">
-                <div className="w-3 h-3 rounded-full" style={{ background: '#EF5350' }} />
-                <span className="font-bold" style={{ color: '#8D6E63' }}>Junk Food Hits: {junkContacts}</span>
+                <div className="w-3 h-3 rounded" style={{ background: '#FF4444' }} />
+                <span className="font-bold" style={{ color: '#A0A0C0' }}>Junk Food Hits: {junkContacts}</span>
               </div>
             </div>
 
             <button
               onClick={startGame}
-              className="w-full text-white rounded-2xl py-4 font-bold text-lg flex items-center justify-center gap-2 transition-colors shadow-lg"
-              style={{ background: '#4CAF50', boxShadow: '0 8px 20px rgba(76,175,80,0.3)' }}
-              onMouseEnter={(e) => e.currentTarget.style.background = '#388E3C'}
-              onMouseLeave={(e) => e.currentTarget.style.background = '#4CAF50'}
+              className="w-full text-white rounded-lg py-4 font-bold text-lg flex items-center justify-center gap-2 transition-all shadow-lg uppercase tracking-wide"
+              style={{ background: 'linear-gradient(180deg, #00E639 0%, #00B82E 100%)', boxShadow: '0 6px 20px rgba(0,230,57,0.35)' }}
+              onMouseEnter={(e) => e.currentTarget.style.background = 'linear-gradient(180deg, #00FF41 0%, #00CC33 100%)'}
+              onMouseLeave={(e) => e.currentTarget.style.background = 'linear-gradient(180deg, #00E639 0%, #00B82E 100%)'}
             >
               <RotateCcw className="w-5 h-5" />
               RUN AGAIN!

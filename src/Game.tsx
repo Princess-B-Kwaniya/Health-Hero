@@ -10,25 +10,26 @@ import { CityBackground } from './CityBackground';
 export function Game() {
   return (
     <Canvas
-      camera={{ position: [0, 5, 10], fov: 60 }}
+      camera={{ position: [0, 6, 12], fov: 55 }}
       shadows={{ type: 'soft' as any }}
       gl={{ antialias: true, toneMapping: 4 /* ACESFilmic */ }}
     >
-      <color attach="background" args={['#7EC8E3']} />
-      <fog attach="fog" args={['#C5E4F0', 60, 180]} />
+      {/* Bright Roblox-style sky blue background */}
+      <color attach="background" args={['#78B9FF']} />
+      <fog attach="fog" args={['#A8D8FF', 80, 200]} />
 
-      {/* Environment for realistic reflections */}
-      <Environment preset="city" background={false} environmentIntensity={0.35} />
+      {/* Studio-style environment for plastic reflections */}
+      <Environment preset="city" background={false} environmentIntensity={0.5} />
 
-      {/* Ambient fill */}
-      <ambientLight intensity={0.55} color="#ffffff" />
+      {/* Bright ambient fill — Roblox is well-lit */}
+      <ambientLight intensity={0.75} color="#ffffff" />
 
-      {/* Main sun */}
+      {/* Strong main sun — clean Roblox shadows */}
       <directionalLight
-        position={[15, 25, 10]}
+        position={[15, 30, 10]}
         castShadow
-        intensity={1.8}
-        color="#FFF5E1"
+        intensity={2.2}
+        color="#FFFFFF"
         shadow-mapSize-width={2048}
         shadow-mapSize-height={2048}
         shadow-camera-left={-30}
@@ -40,18 +41,18 @@ export function Game() {
         shadow-bias={-0.0005}
       />
 
-      {/* Sky / ground hemisphere fill */}
-      <hemisphereLight args={['#87CEEB', '#8D6E63', 0.4]} />
+      {/* Sky / ground hemisphere fill — brighter */}
+      <hemisphereLight args={['#87CEEB', '#4CB050', 0.5]} />
 
-      {/* Subtle warm fill from behind camera */}
-      <pointLight position={[0, 8, 15]} color="#FFF8E1" intensity={0.4} distance={40} />
+      {/* Fill from behind camera */}
+      <pointLight position={[0, 10, 15]} color="#FFFFFF" intensity={0.5} distance={50} />
 
       <Sky
-        sunPosition={[100, 40, 100]}
-        rayleigh={0.5}
-        turbidity={6}
-        mieCoefficient={0.003}
-        mieDirectionalG={0.8}
+        sunPosition={[100, 60, 100]}
+        rayleigh={0.3}
+        turbidity={3}
+        mieCoefficient={0.002}
+        mieDirectionalG={0.7}
       />
 
       <GameManager />

@@ -120,26 +120,34 @@ export function Obstacles() {
         const junkColor = obs.junk.color;
         const warningColor = '#EF5350';
 
-        const junkMat = <meshStandardMaterial color={junkColor} roughness={0.55} metalness={0.05} />;
-        const warnMat = <meshStandardMaterial color={warningColor} emissive={warningColor} emissiveIntensity={0.35} roughness={0.4} />;
+        /* Roblox SmoothPlastic materials */
+        const junkMat = <meshStandardMaterial color={junkColor} roughness={0.3} metalness={0.05} />;
+        const warnMat = <meshStandardMaterial color={warningColor} emissive={warningColor} emissiveIntensity={0.5} roughness={0.25} metalness={0.1} />;
 
         if (obs.type === 'barrier') {
           return (
             <group key={obs.id} position={[obs.lane * LANE_WIDTH, 0.5, obs.z]}>
+              {/* Roblox-style blocky barrier with stud accents */}
               <mesh castShadow receiveShadow>
                 <boxGeometry args={[1.8, 1, 1]} />
                 {junkMat}
               </mesh>
-              <mesh position={[0, 0.65, 0]}>
-                <coneGeometry args={[0.2, 0.3, 8]} />
+              {/* Stud bumps on top */}
+              <mesh position={[0, 0.55, 0]}>
+                <cylinderGeometry args={[0.15, 0.15, 0.12, 8]} />
                 {warnMat}
               </mesh>
-              <mesh position={[-0.5, 0.65, 0]}>
-                <coneGeometry args={[0.15, 0.25, 8]} />
+              <mesh position={[-0.5, 0.55, 0]}>
+                <cylinderGeometry args={[0.12, 0.12, 0.12, 8]} />
                 {warnMat}
               </mesh>
-              <mesh position={[0.5, 0.65, 0]}>
-                <coneGeometry args={[0.15, 0.25, 8]} />
+              <mesh position={[0.5, 0.55, 0]}>
+                <cylinderGeometry args={[0.12, 0.12, 0.12, 8]} />
+                {warnMat}
+              </mesh>
+              {/* X warning decal */}
+              <mesh position={[0, 0.15, 0.52]}>
+                <boxGeometry args={[0.6, 0.6, 0.02]} />
                 {warnMat}
               </mesh>
             </group>
@@ -147,12 +155,18 @@ export function Obstacles() {
         } else if (obs.type === 'overhead') {
           return (
             <group key={obs.id} position={[obs.lane * LANE_WIDTH, 1.25, obs.z]}>
+              {/* Roblox overhead block */}
               <mesh castShadow receiveShadow>
                 <boxGeometry args={[1.8, 1.5, 1]} />
-                <meshStandardMaterial color={junkColor} roughness={0.55} metalness={0.05} transparent opacity={0.85} />
+                <meshStandardMaterial color={junkColor} roughness={0.3} metalness={0.05} transparent opacity={0.9} />
               </mesh>
-              <mesh position={[0, -0.9, 0]}>
-                <coneGeometry args={[0.25, 0.3, 8]} />
+              {/* Danger studs hanging down */}
+              <mesh position={[-0.4, -0.82, 0]}>
+                <cylinderGeometry args={[0.12, 0.12, 0.12, 8]} />
+                {warnMat}
+              </mesh>
+              <mesh position={[0.4, -0.82, 0]}>
+                <cylinderGeometry args={[0.12, 0.12, 0.12, 8]} />
                 {warnMat}
               </mesh>
             </group>
@@ -160,18 +174,27 @@ export function Obstacles() {
         } else {
           return (
             <group key={obs.id} position={[obs.lane * LANE_WIDTH, 1.5, obs.z]}>
+              {/* Roblox wall obstacle */}
               <mesh castShadow receiveShadow>
                 <boxGeometry args={[2, 3, 6]} />
                 {junkMat}
               </mesh>
+              {/* Roblox X decal on wall face */}
               <mesh position={[0, 1.2, 3.05]} rotation={[0, 0, Math.PI / 4]}>
-                <boxGeometry args={[0.15, 1.5, 0.05]} />
-                <meshStandardMaterial color={warningColor} emissive={warningColor} emissiveIntensity={0.5} roughness={0.3} />
+                <boxGeometry args={[0.2, 1.8, 0.05]} />
+                <meshStandardMaterial color={warningColor} emissive={warningColor} emissiveIntensity={0.6} roughness={0.25} metalness={0.1} />
               </mesh>
               <mesh position={[0, 1.2, 3.05]} rotation={[0, 0, -Math.PI / 4]}>
-                <boxGeometry args={[0.15, 1.5, 0.05]} />
-                <meshStandardMaterial color={warningColor} emissive={warningColor} emissiveIntensity={0.5} roughness={0.3} />
+                <boxGeometry args={[0.2, 1.8, 0.05]} />
+                <meshStandardMaterial color={warningColor} emissive={warningColor} emissiveIntensity={0.6} roughness={0.25} metalness={0.1} />
               </mesh>
+              {/* Studs on top of wall */}
+              {[-0.5, 0, 0.5].map((zOff) => (
+                <mesh key={zOff} position={[0, 3.06, zOff]}>
+                  <cylinderGeometry args={[0.15, 0.15, 0.12, 8]} />
+                  {warnMat}
+                </mesh>
+              ))}
             </group>
           );
         }
