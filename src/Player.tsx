@@ -93,108 +93,154 @@ export function Player() {
 
   // Modern Roblox-style Color Palette
   const skin = '#F1C27D';
-  const shirt = '#212121'; // Edgy dark grey/black
-  const pants = '#1565C0'; // Denim blue
-  const shoe = '#ECEFF1';  // Fresh white sneakers
-  const capColor = '#D32F2F'; // Red accent
+  const shirt = '#212121';
+  const shirtAccent = '#00E639'; // Green hero stripe
+  const pants = '#1565C0';
+  const shoe = '#ECEFF1';
+  const shoeSole = '#333333';
+  const capColor = '#D32F2F';
+  const wristband = '#FFD000';
+  const belt = '#8D6E63';
 
   return (
     <group ref={playerRef as any} position={[0, 0.5, 0]} rotation={[0, Math.PI, 0]}>
       {/* Blocky Torso */}
       <mesh castShadow position={[0, 0.15, 0]}>
         <boxGeometry args={[0.7, 0.5, 0.35]} />
-        <meshStandardMaterial color={shirt} roughness={0.8} />
+        <meshStandardMaterial color={shirt} roughness={0.55} metalness={0.05} />
+      </mesh>
+      {/* Hero stripe across chest */}
+      <mesh position={[0, 0.18, 0.178]}>
+        <boxGeometry args={[0.5, 0.1, 0.005]} />
+        <meshStandardMaterial color={shirtAccent} emissive={shirtAccent} emissiveIntensity={0.3} roughness={0.3} />
+      </mesh>
+      {/* Belt */}
+      <mesh position={[0, -0.08, 0]}>
+        <boxGeometry args={[0.72, 0.06, 0.37]} />
+        <meshStandardMaterial color={belt} roughness={0.6} metalness={0.15} />
+      </mesh>
+      {/* Belt buckle */}
+      <mesh position={[0, -0.08, 0.19]}>
+        <boxGeometry args={[0.08, 0.06, 0.01]} />
+        <meshStandardMaterial color="#FFD000" metalness={0.8} roughness={0.15} />
       </mesh>
 
       {/* Left Arm */}
       <group ref={leftArmRef} position={[-0.5, 0.35, 0]}>
-        {/* Arm Skin */}
         <mesh castShadow position={[0, -0.225, 0]}>
           <boxGeometry args={[0.25, 0.45, 0.25]} />
-          <meshStandardMaterial color={skin} roughness={0.8} />
+          <meshStandardMaterial color={skin} roughness={0.6} />
         </mesh>
-        {/* T-shirt Sleeve */}
         <mesh castShadow position={[0, -0.05, 0]}>
           <boxGeometry args={[0.27, 0.15, 0.27]} />
-          <meshStandardMaterial color={shirt} roughness={0.8} />
+          <meshStandardMaterial color={shirt} roughness={0.55} metalness={0.05} />
+        </mesh>
+        {/* Wristband */}
+        <mesh position={[0, -0.42, 0]}>
+          <boxGeometry args={[0.27, 0.05, 0.27]} />
+          <meshStandardMaterial color={wristband} roughness={0.3} metalness={0.1} />
         </mesh>
       </group>
 
       {/* Right Arm */}
       <group ref={rightArmRef} position={[0.5, 0.35, 0]}>
-        {/* Arm Skin */}
         <mesh castShadow position={[0, -0.225, 0]}>
           <boxGeometry args={[0.25, 0.45, 0.25]} />
-          <meshStandardMaterial color={skin} roughness={0.8} />
+          <meshStandardMaterial color={skin} roughness={0.6} />
         </mesh>
-        {/* T-shirt Sleeve */}
         <mesh castShadow position={[0, -0.05, 0]}>
           <boxGeometry args={[0.27, 0.15, 0.27]} />
-          <meshStandardMaterial color={shirt} roughness={0.8} />
+          <meshStandardMaterial color={shirt} roughness={0.55} metalness={0.05} />
+        </mesh>
+        <mesh position={[0, -0.42, 0]}>
+          <boxGeometry args={[0.27, 0.05, 0.27]} />
+          <meshStandardMaterial color={wristband} roughness={0.3} metalness={0.1} />
         </mesh>
       </group>
 
       {/* Left Leg */}
       <group ref={leftLegRef} position={[-0.2, -0.1, 0]}>
-        {/* Pant Leg */}
         <mesh castShadow position={[0, -0.15, 0]}>
           <boxGeometry args={[0.28, 0.3, 0.28]} />
-          <meshStandardMaterial color={pants} roughness={0.9} />
+          <meshStandardMaterial color={pants} roughness={0.65} />
         </mesh>
-        {/* Sneaker */}
+        {/* Sneaker upper */}
         <mesh castShadow position={[0, -0.35, 0.05]}>
           <boxGeometry args={[0.3, 0.1, 0.35]} />
-          <meshStandardMaterial color={shoe} roughness={0.5} />
+          <meshStandardMaterial color={shoe} roughness={0.35} metalness={0.05} />
+        </mesh>
+        {/* Sole */}
+        <mesh position={[0, -0.41, 0.05]}>
+          <boxGeometry args={[0.31, 0.025, 0.36]} />
+          <meshStandardMaterial color={shoeSole} roughness={0.7} />
+        </mesh>
+        {/* Shoe stripe */}
+        <mesh position={[0, -0.34, 0.23]}>
+          <boxGeometry args={[0.2, 0.04, 0.005]} />
+          <meshStandardMaterial color={shirtAccent} roughness={0.3} />
         </mesh>
       </group>
 
       {/* Right Leg */}
       <group ref={rightLegRef} position={[0.2, -0.1, 0]}>
-        {/* Pant Leg */}
         <mesh castShadow position={[0, -0.15, 0]}>
           <boxGeometry args={[0.28, 0.3, 0.28]} />
-          <meshStandardMaterial color={pants} roughness={0.9} />
+          <meshStandardMaterial color={pants} roughness={0.65} />
         </mesh>
-        {/* Sneaker */}
         <mesh castShadow position={[0, -0.35, 0.05]}>
           <boxGeometry args={[0.3, 0.1, 0.35]} />
-          <meshStandardMaterial color={shoe} roughness={0.5} />
+          <meshStandardMaterial color={shoe} roughness={0.35} metalness={0.05} />
+        </mesh>
+        <mesh position={[0, -0.41, 0.05]}>
+          <boxGeometry args={[0.31, 0.025, 0.36]} />
+          <meshStandardMaterial color={shoeSole} roughness={0.7} />
+        </mesh>
+        <mesh position={[0, -0.34, 0.23]}>
+          <boxGeometry args={[0.2, 0.04, 0.005]} />
+          <meshStandardMaterial color={shirtAccent} roughness={0.3} />
         </mesh>
       </group>
 
       {/* Head */}
       <group position={[0, 0.65, 0]}>
-        {/* Blocky Head Mesh */}
         <mesh castShadow>
           <boxGeometry args={[0.45, 0.45, 0.45]} />
-          <meshStandardMaterial color={skin} roughness={0.8} />
+          <meshStandardMaterial color={skin} roughness={0.6} />
         </mesh>
 
-        {/* Flat Classic Decal-style Face */}
-        {/* Left Eye */}
-        <mesh position={[-0.1, 0.05, 0.23]}>
-          <boxGeometry args={[0.06, 0.06, 0.01]} />
+        {/* Eyes — white sclera with black pupil */}
+        {[-0.1, 0.1].map((x) => (
+          <group key={x} position={[x, 0.05, 0.228]}>
+            <mesh><boxGeometry args={[0.08, 0.08, 0.005]} /><meshBasicMaterial color="#FFFFFF" /></mesh>
+            <mesh position={[0, 0, 0.003]}><boxGeometry args={[0.04, 0.05, 0.005]} /><meshBasicMaterial color="#111" /></mesh>
+          </group>
+        ))}
+        {/* Eyebrows */}
+        <mesh position={[-0.1, 0.12, 0.228]}><boxGeometry args={[0.09, 0.02, 0.005]} /><meshBasicMaterial color="#5D4037" /></mesh>
+        <mesh position={[0.1, 0.12, 0.228]}><boxGeometry args={[0.09, 0.02, 0.005]} /><meshBasicMaterial color="#5D4037" /></mesh>
+        {/* Smile */}
+        <mesh position={[0, -0.1, 0.228]}>
+          <boxGeometry args={[0.14, 0.035, 0.005]} />
           <meshBasicMaterial color="#111" />
         </mesh>
-        {/* Right Eye */}
-        <mesh position={[0.1, 0.05, 0.23]}>
-          <boxGeometry args={[0.06, 0.06, 0.01]} />
-          <meshBasicMaterial color="#111" />
-        </mesh>
-        {/* Mouth */}
-        <mesh position={[0, -0.1, 0.23]}>
-          <boxGeometry args={[0.15, 0.04, 0.01]} />
-          <meshBasicMaterial color="#111" />
-        </mesh>
+        {/* Smile ends curve up */}
+        <mesh position={[-0.08, -0.09, 0.228]}><boxGeometry args={[0.025, 0.025, 0.005]} /><meshBasicMaterial color="#111" /></mesh>
+        <mesh position={[0.08, -0.09, 0.228]}><boxGeometry args={[0.025, 0.025, 0.005]} /><meshBasicMaterial color="#111" /></mesh>
 
         {/* Backwards Baseball Cap */}
         <mesh castShadow position={[0, 0.25, 0]}>
-          <boxGeometry args={[0.47, 0.1, 0.47]} />
-          <meshStandardMaterial color={capColor} roughness={0.9} />
+          <boxGeometry args={[0.48, 0.1, 0.48]} />
+          <meshStandardMaterial color={capColor} roughness={0.6} metalness={0.05} />
         </mesh>
+        {/* Cap brim (backwards) */}
         <mesh castShadow position={[0, 0.2, -0.3]}>
           <boxGeometry args={[0.47, 0.05, 0.2]} />
-          <meshStandardMaterial color={capColor} roughness={0.9} />
+          <meshStandardMaterial color={capColor} roughness={0.6} metalness={0.05} />
+        </mesh>
+        {/* Cap button on top */}
+        <mesh position={[0, 0.32, 0]}>
+          <cylinderGeometry args={[0.03, 0.03, 0.03, 8]} />
+          <meshStandardMaterial color="#FFFFFF" roughness={0.4} />
         </mesh>
       </group>
     </group>

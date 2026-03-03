@@ -10,12 +10,21 @@ function createBaseplateTexture(baseColor: string, studColor: string) {
   canvas.height = 256;
   const ctx = canvas.getContext('2d')!;
 
-  // Flat base
+  // Grass base with variation
   ctx.fillStyle = baseColor;
   ctx.fillRect(0, 0, 256, 256);
 
+  // Subtle grass blades / texture variation
+  for (let i = 0; i < 600; i++) {
+    const gx = Math.random() * 256;
+    const gy = Math.random() * 256;
+    const green = 120 + Math.floor(Math.random() * 80);
+    ctx.fillStyle = `rgba(${Math.floor(green * 0.3)},${green},${Math.floor(green * 0.3)},0.3)`;
+    ctx.fillRect(gx, gy, 1, 3 + Math.random() * 3);
+  }
+
   // Studs grid (Roblox classic baseplate look)
-  const studSize = 8;
+  const studSize = 7;
   const spacing = 32;
   ctx.fillStyle = studColor;
   for (let y = spacing / 2; y < 256; y += spacing) {
@@ -26,12 +35,21 @@ function createBaseplateTexture(baseColor: string, studColor: string) {
     }
   }
 
-  // Subtle stud highlight
-  ctx.fillStyle = 'rgba(255,255,255,0.15)';
+  // Stud highlights — 3D pop
+  ctx.fillStyle = 'rgba(255,255,255,0.2)';
   for (let y = spacing / 2; y < 256; y += spacing) {
     for (let x = spacing / 2; x < 256; x += spacing) {
       ctx.beginPath();
-      ctx.arc(x - 2, y - 2, studSize * 0.5, 0, Math.PI * 2);
+      ctx.arc(x - 2, y - 2, studSize * 0.45, 0, Math.PI * 2);
+      ctx.fill();
+    }
+  }
+  // Stud shadows
+  ctx.fillStyle = 'rgba(0,0,0,0.08)';
+  for (let y = spacing / 2; y < 256; y += spacing) {
+    for (let x = spacing / 2; x < 256; x += spacing) {
+      ctx.beginPath();
+      ctx.arc(x + 2, y + 2, studSize * 0.5, 0, Math.PI * 2);
       ctx.fill();
     }
   }
@@ -50,44 +68,56 @@ function createLaneTexture() {
   canvas.height = 512;
   const ctx = canvas.getContext('2d')!;
 
-  // Dark grey road base (Roblox "Medium stone grey")
-  ctx.fillStyle = '#A3A2A5';
+  // Asphalt base — slightly textured dark grey
+  ctx.fillStyle = '#707070';
   ctx.fillRect(0, 0, 512, 512);
-
-  // Studs on road
-  const studSize = 6;
-  const spacing = 32;
-  ctx.fillStyle = '#B4B4B6';
-  for (let y = spacing / 2; y < 512; y += spacing) {
-    for (let x = spacing / 2; x < 512; x += spacing) {
-      ctx.beginPath();
-      ctx.arc(x, y, studSize, 0, Math.PI * 2);
-      ctx.fill();
-    }
+  // Subtle noise grain for asphalt feel
+  for (let i = 0; i < 3000; i++) {
+    const nx = Math.random() * 512;
+    const ny = Math.random() * 512;
+    const shade = 100 + Math.floor(Math.random() * 30);
+    ctx.fillStyle = `rgb(${shade},${shade},${shade})`;
+    ctx.fillRect(nx, ny, 2, 2);
   }
 
-  // Lane dividers — bright yellow Roblox bricks
-  ctx.fillStyle = '#F5CD30';
-  ctx.setLineDash([40, 30]);
+  // Lane dividers — bright yellow dashes
+  ctx.setLineDash([40, 28]);
   ctx.lineWidth = 8;
   ctx.strokeStyle = '#F5CD30';
-  [180, 332].forEach(lx => {
+  [178, 334].forEach(lx => {
     ctx.beginPath();
     ctx.moveTo(lx, 0);
     ctx.lineTo(lx, 512);
     ctx.stroke();
   });
 
-  // Road edge — bright blue Roblox accent
-  ctx.strokeStyle = '#00A2FF';
-  ctx.lineWidth = 6;
+  // Road edge — solid white borders
+  ctx.strokeStyle = '#FFFFFF';
+  ctx.lineWidth = 5;
   ctx.setLineDash([]);
-  [10, 502].forEach(lx => {
+  [12, 500].forEach(lx => {
     ctx.beginPath();
     ctx.moveTo(lx, 0);
     ctx.lineTo(lx, 512);
     ctx.stroke();
   });
+
+  // Bright green shoulder accent outside white lines
+  ctx.strokeStyle = '#00E639';
+  ctx.lineWidth = 3;
+  [5, 507].forEach(lx => {
+    ctx.beginPath();
+    ctx.moveTo(lx, 0);
+    ctx.lineTo(lx, 512);
+    ctx.stroke();
+  });
+
+  // Occasional crosswalk markings
+  ctx.fillStyle = '#FFFFFF';
+  for (let stripe = 0; stripe < 6; stripe++) {
+    ctx.fillRect(60 + stripe * 70, 240, 50, 8);
+    ctx.fillRect(60 + stripe * 70, 252, 50, 8);
+  }
 
   const tex = new THREE.CanvasTexture(canvas);
   tex.wrapS = THREE.RepeatWrapping;
@@ -113,15 +143,22 @@ export function Ground() {
 
   return (
     <>
-      {/* Road — Roblox studded baseplate */}
+      {/* Road — textured asphalt */}
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.01, -50]} receiveShadow>
         <planeGeometry args={[15, 200]} />
-        <meshStandardMaterial map={laneTex} roughness={0.35} metalness={0.02} />
+        <meshStandardMaterial map={laneTex} roughness={0.55} metalness={0.02} />
       </mesh>
-      {/* Grass — bright green Roblox baseplate */}
+      {/* Sidewalk curb */}
+      {[-7.7, 7.7].map((x) => (
+        <mesh key={x} position={[x, 0.05, -50]} receiveShadow castShadow>
+          <boxGeometry args={[0.4, 0.12, 200]} />
+          <meshStandardMaterial color="#BDBDBD" roughness={0.5} />
+        </mesh>
+      ))}
+      {/* Grass — bright green with texture */}
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.03, -50]} receiveShadow>
         <planeGeometry args={[120, 200]} />
-        <meshStandardMaterial map={grassTex} roughness={0.4} metalness={0.02} />
+        <meshStandardMaterial map={grassTex} roughness={0.5} metalness={0.01} />
       </mesh>
     </>
   );

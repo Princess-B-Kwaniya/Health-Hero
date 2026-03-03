@@ -72,7 +72,7 @@ const COMBO_NAMES: Record<FoodGroup, string> = {
 };
 
 export const useGameStore = create<GameState>((set, get) => ({
-  status: 'start',
+  status: 'start' as GameStatus,
   heroPoints: 0,
   healthMeter: 100,
   distance: 0,

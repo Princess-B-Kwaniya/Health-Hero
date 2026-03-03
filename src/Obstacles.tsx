@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+﻿import { useRef, useState, useMemo } from 'react';
 import { useFrame } from '@react-three/fiber';
 import { Text } from '@react-three/drei';
 import { useGameStore } from './store';
@@ -7,6 +7,7 @@ import * as THREE from 'three';
 
 const LANE_WIDTH = 2.5;
 const SPAWN_Z = -150;
+const FONT_URL = 'https://fonts.gstatic.com/s/fredokaone/v14/k3kUo8kEI-tA1RRcTZGmTlHGCaen8wf-.woff2';
 
 interface ObstacleData {
   id: number;
@@ -14,6 +15,277 @@ interface ObstacleData {
   z: number;
   type: 'barrier' | 'overhead' | 'train';
   junk: JunkItemDef;
+}
+
+/* â”€â”€ Detailed per-item 3D models â”€â”€ */
+
+function ColaCan({ color }: { color: string }) {
+  return (
+    <group position={[0, 0.55, 0]}>
+      {/* Body */}
+      <mesh castShadow><cylinderGeometry args={[0.3, 0.3, 0.8, 20]} /><meshStandardMaterial color={color} metalness={0.65} roughness={0.15} /></mesh>
+      {/* Top rim */}
+      <mesh position={[0, 0.42, 0]}><cylinderGeometry args={[0.28, 0.3, 0.04, 20]} /><meshStandardMaterial color="#C0C0C0" metalness={0.85} roughness={0.1} /></mesh>
+      {/* Pull tab */}
+      <mesh position={[0, 0.46, 0]} rotation={[0, 0, 0]}><boxGeometry args={[0.08, 0.01, 0.15]} /><meshStandardMaterial color="#D0D0D0" metalness={0.9} roughness={0.1} /></mesh>
+      {/* Label band */}
+      <mesh position={[0, 0.05, 0]}><cylinderGeometry args={[0.305, 0.305, 0.3, 20]} /><meshStandardMaterial color="#FFFFFF" metalness={0.1} roughness={0.3} transparent opacity={0.5} /></mesh>
+      {/* Bottom ring */}
+      <mesh position={[0, -0.42, 0]}><cylinderGeometry args={[0.3, 0.28, 0.04, 20]} /><meshStandardMaterial color="#C0C0C0" metalness={0.85} roughness={0.1} /></mesh>
+    </group>
+  );
+}
+
+function EnergyDrink({ color }: { color: string }) {
+  return (
+    <group position={[0, 0.6, 0]}>
+      <mesh castShadow><cylinderGeometry args={[0.22, 0.22, 1.0, 20]} /><meshStandardMaterial color={color} metalness={0.7} roughness={0.12} /></mesh>
+      <mesh position={[0, 0.52, 0]}><cylinderGeometry args={[0.2, 0.22, 0.04, 20]} /><meshStandardMaterial color="#A0A0A0" metalness={0.85} roughness={0.1} /></mesh>
+      {/* Lightning bolt decal (Z-stripe) */}
+      <mesh position={[0.24, 0, 0]} rotation={[0, 0, 0.3]}><boxGeometry args={[0.02, 0.5, 0.08]} /><meshStandardMaterial color="#FFD000" emissive="#FFD000" emissiveIntensity={0.6} /></mesh>
+    </group>
+  );
+}
+
+function Milkshake({ color }: { color: string }) {
+  return (
+    <group position={[0, 0.55, 0]}>
+      {/* Cup */}
+      <mesh castShadow><cylinderGeometry args={[0.32, 0.22, 0.7, 16]} /><meshStandardMaterial color="#FFFFFF" roughness={0.25} metalness={0.05} /></mesh>
+      {/* Milkshake fill */}
+      <mesh position={[0, 0.2, 0]}><sphereGeometry args={[0.35, 16, 12, 0, Math.PI * 2, 0, Math.PI / 2]} /><meshStandardMaterial color={color} roughness={0.4} /></mesh>
+      {/* Whipped cream top */}
+      <mesh position={[0, 0.45, 0]}><sphereGeometry args={[0.2, 12, 12]} /><meshStandardMaterial color="#FFF8E1" roughness={0.6} /></mesh>
+      {/* Straw */}
+      <mesh position={[0.1, 0.65, 0]} rotation={[0, 0, -0.15]}><cylinderGeometry args={[0.025, 0.025, 0.6, 8]} /><meshStandardMaterial color="#E91E63" roughness={0.3} /></mesh>
+      {/* Cherry */}
+      <mesh position={[0, 0.58, 0]}><sphereGeometry args={[0.06, 10, 10]} /><meshStandardMaterial color="#D32F2F" roughness={0.3} /></mesh>
+    </group>
+  );
+}
+
+function Lollipop({ color }: { color: string }) {
+  return (
+    <group position={[0, 0.55, 0]}>
+      {/* Stick */}
+      <mesh><cylinderGeometry args={[0.03, 0.03, 0.6, 8]} /><meshStandardMaterial color="#F5F5DC" roughness={0.5} /></mesh>
+      {/* Candy disc â€” spiral look via layered rings */}
+      <mesh position={[0, 0.45, 0]} rotation={[Math.PI / 2, 0, 0]}><torusGeometry args={[0.22, 0.1, 12, 24]} /><meshStandardMaterial color={color} roughness={0.25} /></mesh>
+      <mesh position={[0, 0.45, 0]}><sphereGeometry args={[0.12, 12, 12]} /><meshStandardMaterial color="#FFFFFF" roughness={0.25} /></mesh>
+      {/* Outer swirl ring */}
+      <mesh position={[0, 0.45, 0]} rotation={[Math.PI / 2, 0, 0]}><torusGeometry args={[0.3, 0.03, 8, 20]} /><meshStandardMaterial color="#FFFFFF" transparent opacity={0.7} roughness={0.25} /></mesh>
+    </group>
+  );
+}
+
+function GummyBears({ color }: { color: string }) {
+  return (
+    <group position={[0, 0.4, 0]}>
+      {/* Three little bears in a row */}
+      {[-0.22, 0, 0.22].map((x, i) => {
+        const c = i === 0 ? '#FF5722' : i === 1 ? color : '#4CAF50';
+        return (
+          <group key={i} position={[x, 0, 0]}>
+            {/* body */}
+            <mesh castShadow><sphereGeometry args={[0.13, 12, 12]} /><meshStandardMaterial color={c} roughness={0.35} transparent opacity={0.85} /></mesh>
+            {/* head */}
+            <mesh position={[0, 0.15, 0]}><sphereGeometry args={[0.09, 10, 10]} /><meshStandardMaterial color={c} roughness={0.35} transparent opacity={0.85} /></mesh>
+            {/* ears */}
+            <mesh position={[-0.07, 0.22, 0]}><sphereGeometry args={[0.035, 8, 8]} /><meshStandardMaterial color={c} roughness={0.35} transparent opacity={0.85} /></mesh>
+            <mesh position={[0.07, 0.22, 0]}><sphereGeometry args={[0.035, 8, 8]} /><meshStandardMaterial color={c} roughness={0.35} transparent opacity={0.85} /></mesh>
+          </group>
+        );
+      })}
+    </group>
+  );
+}
+
+function ChocolateBar({ color }: { color: string }) {
+  return (
+    <group position={[0, 0.45, 0]}>
+      {/* Wrapper */}
+      <mesh castShadow><boxGeometry args={[0.75, 0.2, 0.4]} /><meshStandardMaterial color="#7B1FA2" metalness={0.2} roughness={0.3} /></mesh>
+      {/* Exposed chocolate segments */}
+      {[-0.2, 0, 0.2].map((x) => (
+        <mesh key={x} position={[x, 0.14, 0]} castShadow><boxGeometry args={[0.18, 0.08, 0.35]} /><meshStandardMaterial color={color} roughness={0.5} /></mesh>
+      ))}
+    </group>
+  );
+}
+
+function CottonCandy({ color }: { color: string }) {
+  return (
+    <group position={[0, 0.55, 0]}>
+      {/* Stick */}
+      <mesh><cylinderGeometry args={[0.025, 0.025, 0.55, 8]} /><meshStandardMaterial color="#F5F5DC" roughness={0.5} /></mesh>
+      {/* Fluffy cloud layers */}
+      <mesh position={[0, 0.35, 0]}><sphereGeometry args={[0.28, 12, 12]} /><meshStandardMaterial color={color} roughness={0.6} transparent opacity={0.8} /></mesh>
+      <mesh position={[0.12, 0.4, 0]}><sphereGeometry args={[0.2, 10, 10]} /><meshStandardMaterial color="#F8BBD0" roughness={0.6} transparent opacity={0.75} /></mesh>
+      <mesh position={[-0.1, 0.42, 0.06]}><sphereGeometry args={[0.18, 10, 10]} /><meshStandardMaterial color="#E1BEE7" roughness={0.6} transparent opacity={0.75} /></mesh>
+    </group>
+  );
+}
+
+const FRIES_DATA = [
+  { pos: [-0.12, 0.4, -0.04] as const, rot: [-0.1, 0, 0.05] as const, h: 0.38 },
+  { pos: [0.05, 0.45, 0.03] as const, rot: [0.08, 0, -0.12] as const, h: 0.42 },
+  { pos: [-0.05, 0.42, -0.08] as const, rot: [-0.05, 0, 0.1] as const, h: 0.35 },
+  { pos: [0.14, 0.38, 0.06] as const, rot: [0.12, 0, -0.07] as const, h: 0.4 },
+  { pos: [0, 0.48, 0.02] as const, rot: [-0.08, 0, 0.06] as const, h: 0.44 },
+];
+
+function FrenchFries({ color }: { color: string }) {
+  return (
+    <group position={[0, 0.45, 0]}>
+      {/* Red carton */}
+      <mesh castShadow><boxGeometry args={[0.5, 0.45, 0.35]} /><meshStandardMaterial color="#D32F2F" roughness={0.4} /></mesh>
+      {/* Fries sticking up */}
+      {FRIES_DATA.map((f, i) => (
+        <mesh key={i} position={[f.pos[0], f.pos[1], f.pos[2]]} rotation={[f.rot[0], f.rot[1], f.rot[2]]}>
+          <boxGeometry args={[0.06, f.h, 0.06]} />
+          <meshStandardMaterial color={color} roughness={0.5} />
+        </mesh>
+      ))}
+    </group>
+  );
+}
+
+function FriedChickenModel({ color }: { color: string }) {
+  return (
+    <group position={[0, 0.4, 0]}>
+      {/* Drumstick body */}
+      <mesh castShadow rotation={[0, 0, 0.4]}><sphereGeometry args={[0.25, 12, 12]} /><meshStandardMaterial color={color} roughness={0.6} /></mesh>
+      {/* Crispy bumps */}
+      <mesh position={[0.15, 0.1, 0.12]}><sphereGeometry args={[0.1, 8, 8]} /><meshStandardMaterial color="#E8A040" roughness={0.7} /></mesh>
+      <mesh position={[-0.1, 0.12, -0.1]}><sphereGeometry args={[0.08, 8, 8]} /><meshStandardMaterial color="#D49030" roughness={0.7} /></mesh>
+      {/* Bone */}
+      <mesh position={[-0.25, -0.15, 0]} rotation={[0, 0, 0.4]}><cylinderGeometry args={[0.035, 0.025, 0.35, 8]} /><meshStandardMaterial color="#FFF8E1" roughness={0.4} /></mesh>
+    </group>
+  );
+}
+
+function DoughnutModel({ color }: { color: string }) {
+  return (
+    <group position={[0, 0.45, 0]}>
+      {/* Dough ring */}
+      <mesh castShadow rotation={[Math.PI / 2, 0, 0]}><torusGeometry args={[0.25, 0.12, 16, 24]} /><meshStandardMaterial color="#D4A050" roughness={0.5} /></mesh>
+      {/* Icing on top */}
+      <mesh rotation={[Math.PI / 2, 0, 0]} position={[0, 0.04, 0]}><torusGeometry args={[0.25, 0.1, 12, 24, Math.PI]} /><meshStandardMaterial color={color} roughness={0.3} /></mesh>
+      {/* Sprinkles */}
+      {[[-0.15, 0.08, 0.08], [0.1, 0.09, -0.12], [0.18, 0.07, 0.05], [-0.08, 0.09, -0.15]].map(([x, y, z], i) => (
+        <mesh key={i} position={[x, y, z]} rotation={[0, i, i * 0.5]}><boxGeometry args={[0.04, 0.015, 0.015]} /><meshStandardMaterial color={['#FF4444', '#FFD000', '#4CAF50', '#2196F3'][i]} /></mesh>
+      ))}
+    </group>
+  );
+}
+
+function ChipsModel({ color }: { color: string }) {
+  return (
+    <group position={[0, 0.45, 0]}>
+      {/* Bag */}
+      <mesh castShadow><boxGeometry args={[0.55, 0.6, 0.2]} /><meshStandardMaterial color={color} roughness={0.4} metalness={0.3} /></mesh>
+      {/* Top crinkle */}
+      <mesh position={[0, 0.35, 0]}><boxGeometry args={[0.35, 0.12, 0.15]} /><meshStandardMaterial color={color} roughness={0.35} metalness={0.3} /></mesh>
+      {/* Label stripe */}
+      <mesh position={[0, -0.05, 0.11]}><boxGeometry args={[0.5, 0.25, 0.01]} /><meshStandardMaterial color="#FFFFFF" transparent opacity={0.6} roughness={0.3} /></mesh>
+    </group>
+  );
+}
+
+function CheesePuffs({ color }: { color: string }) {
+  return (
+    <group position={[0, 0.4, 0]}>
+      {/* Scattered puffs */}
+      {[[0, 0, 0], [0.2, 0.05, 0.08], [-0.18, 0.02, -0.06], [0.08, 0.1, -0.12], [-0.1, 0.08, 0.1]].map(([x, y, z], i) => (
+        <mesh key={i} castShadow position={[x, y, z]}><sphereGeometry args={[0.1 + i * 0.01, 8, 8]} /><meshStandardMaterial color={color} roughness={0.6} /></mesh>
+      ))}
+      {/* Bowl underneath */}
+      <mesh position={[0, -0.08, 0]}><cylinderGeometry args={[0.35, 0.25, 0.12, 16]} /><meshStandardMaterial color="#8D6E63" roughness={0.5} /></mesh>
+    </group>
+  );
+}
+
+function NoodlesModel({ color }: { color: string }) {
+  return (
+    <group position={[0, 0.45, 0]}>
+      {/* Cup */}
+      <mesh castShadow><cylinderGeometry args={[0.3, 0.22, 0.6, 16]} /><meshStandardMaterial color="#F5F5F5" roughness={0.3} /></mesh>
+      {/* Noodle swirls sticking up */}
+      {[0, 1.2, 2.4].map((r, i) => (
+        <mesh key={i} position={[Math.cos(r) * 0.1, 0.38, Math.sin(r) * 0.1]} rotation={[0.3, r, 0]}>
+          <torusGeometry args={[0.08, 0.02, 6, 12]} />
+          <meshStandardMaterial color={color} roughness={0.5} />
+        </mesh>
+      ))}
+      {/* Steam wisps */}
+      <mesh position={[0, 0.55, 0]}><sphereGeometry args={[0.06, 8, 8]} /><meshStandardMaterial color="#FFFFFF" transparent opacity={0.3} /></mesh>
+      <mesh position={[0.08, 0.6, 0.04]}><sphereGeometry args={[0.04, 8, 8]} /><meshStandardMaterial color="#FFFFFF" transparent opacity={0.2} /></mesh>
+    </group>
+  );
+}
+
+function CakeSliceModel({ color }: { color: string }) {
+  return (
+    <group position={[0, 0.4, 0]}>
+      {/* Cake triangular wedge â€“ built from box */}
+      <mesh castShadow rotation={[0, 0.3, 0]}><boxGeometry args={[0.6, 0.4, 0.5]} /><meshStandardMaterial color="#FFF8E1" roughness={0.5} /></mesh>
+      {/* Icing layer on top */}
+      <mesh position={[0, 0.22, 0]} rotation={[0, 0.3, 0]}><boxGeometry args={[0.62, 0.06, 0.52]} /><meshStandardMaterial color={color} roughness={0.3} /></mesh>
+      {/* Middle cream layer */}
+      <mesh position={[0, 0.02, 0]} rotation={[0, 0.3, 0]}><boxGeometry args={[0.58, 0.04, 0.48]} /><meshStandardMaterial color="#FFFFFF" roughness={0.4} /></mesh>
+      {/* Cherry on top */}
+      <mesh position={[0, 0.3, 0]}><sphereGeometry args={[0.06, 10, 10]} /><meshStandardMaterial color="#D32F2F" roughness={0.3} /></mesh>
+    </group>
+  );
+}
+
+function IceCreamModel({ color }: { color: string }) {
+  return (
+    <group position={[0, 0.5, 0]}>
+      {/* Waffle cone */}
+      <mesh castShadow position={[0, -0.15, 0]} rotation={[Math.PI, 0, 0]}><coneGeometry args={[0.2, 0.45, 12]} /><meshStandardMaterial color="#D4A055" roughness={0.6} /></mesh>
+      {/* Scoop 1 */}
+      <mesh position={[0, 0.15, 0]}><sphereGeometry args={[0.2, 14, 14]} /><meshStandardMaterial color={color} roughness={0.35} /></mesh>
+      {/* Scoop 2 */}
+      <mesh position={[0, 0.38, 0]}><sphereGeometry args={[0.17, 14, 14]} /><meshStandardMaterial color="#FFF8E1" roughness={0.35} /></mesh>
+      {/* Scoop 3 */}
+      <mesh position={[0.08, 0.52, 0]}><sphereGeometry args={[0.13, 12, 12]} /><meshStandardMaterial color="#8D6E63" roughness={0.35} /></mesh>
+      {/* Wafer stick */}
+      <mesh position={[0.12, 0.55, 0]} rotation={[0, 0, -0.3]}><boxGeometry args={[0.03, 0.3, 0.03]} /><meshStandardMaterial color="#D4A055" roughness={0.5} /></mesh>
+    </group>
+  );
+}
+
+/* â”€â”€ Map item id to creative model â”€â”€ */
+function JunkFoodModel({ junk }: { junk: JunkItemDef }) {
+  switch (junk.id) {
+    case 'JF-001': return <ColaCan color={junk.color} />;
+    case 'JF-002': return <EnergyDrink color={junk.color} />;
+    case 'JF-003': return <Milkshake color={junk.color} />;
+    case 'JF-004': return <Lollipop color={junk.color} />;
+    case 'JF-005': return <GummyBears color={junk.color} />;
+    case 'JF-006': return <ChocolateBar color={junk.color} />;
+    case 'JF-007': return <CottonCandy color={junk.color} />;
+    case 'JF-008': return <FrenchFries color={junk.color} />;
+    case 'JF-009': return <FriedChickenModel color={junk.color} />;
+    case 'JF-010': return <DoughnutModel color={junk.color} />;
+    case 'JF-011': return <ChipsModel color={junk.color} />;
+    case 'JF-012': return <CheesePuffs color={junk.color} />;
+    case 'JF-013': return <NoodlesModel color={junk.color} />;
+    case 'JF-014': return <CakeSliceModel color={junk.color} />;
+    case 'JF-015': return <IceCreamModel color={junk.color} />;
+    default: return <ColaCan color={junk.color} />;
+  }
+}
+
+/* â”€â”€ Animated glow ring around barrier obstacles â”€â”€ */
+function PulseRing({ color, radius = 0.8 }: { color: string; radius?: number }) {
+  return (
+    <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.02, 0]}>
+      <ringGeometry args={[radius - 0.06, radius, 32]} />
+      <meshStandardMaterial color={color} emissive={color} emissiveIntensity={0.6} transparent opacity={0.4} side={THREE.DoubleSide} />
+    </mesh>
+  );
 }
 
 export function Obstacles() {
@@ -62,19 +334,16 @@ export function Obstacles() {
           }
 
           if (hit) {
-            // For "train" (large wall) obstacles, it's game over instantly
             if (obs.type === 'train') {
               endGame();
               return prev;
             }
-            // For smaller junk food obstacles, apply penalty effects
             hitJunkFood(
               obs.junk.penalty,
               obs.junk.effect,
               obs.junk.effectDuration,
               { item: obs.junk.name, fact: obs.junk.fact, isHealthy: false }
             );
-            // Remove this obstacle after hit
             newObstacles = newObstacles.filter(o => o.id !== obs.id);
             return newObstacles;
           }
@@ -118,191 +387,133 @@ export function Obstacles() {
   return (
     <>
       {obstacles.map((obs) => {
-        const junkColor = obs.junk.color;
         const warningColor = '#EF5350';
-        const categoryColors: Record<string, string> = {
-          'Sugary Drinks': '#B71C1C',
-          'Candy & Sweets': '#E91E63',
-          'Fried Foods': '#FF8F00',
-          'Processed Snacks': '#FDD835',
-          'Excessive Sugar': '#EC407A',
-        };
-        const catColor = categoryColors[obs.junk.category] || warningColor;
 
         if (obs.type === 'barrier') {
-          // --- Recognizable junk food obstacle based on shape ---
           return (
             <group key={obs.id} position={[obs.lane * LANE_WIDTH, 0, obs.z]}>
-              {/* Base platform so players can see where it sits */}
-              <mesh castShadow receiveShadow position={[0, 0.1, 0]}>
-                <boxGeometry args={[1.6, 0.2, 1.2]} />
-                <meshStandardMaterial color="#2A2A2A" roughness={0.4} metalness={0.1} />
-              </mesh>
+              {/* Ground warning ring */}
+              <PulseRing color={warningColor} />
 
-              {/* Main junk food shape - varies by item shape */}
-              {obs.junk.shape === 'cylinder' ? (
-                // Cans / Bottles — tall cylinder
-                <mesh castShadow receiveShadow position={[0, 0.65, 0]}>
-                  <cylinderGeometry args={[0.35, 0.3, 0.9, 16]} />
-                  <meshStandardMaterial color={junkColor} roughness={0.25} metalness={0.2} />
-                </mesh>
-              ) : obs.junk.shape === 'sphere' ? (
-                // Candy / sweets — round shape
-                <mesh castShadow receiveShadow position={[0, 0.6, 0]}>
-                  <sphereGeometry args={[0.4, 16, 16]} />
-                  <meshStandardMaterial color={junkColor} roughness={0.3} metalness={0.05} />
-                </mesh>
-              ) : (
-                // Boxes — fried foods, chips, cake
-                <mesh castShadow receiveShadow position={[0, 0.55, 0]}>
-                  <boxGeometry args={[0.7, 0.7, 0.5]} />
-                  <meshStandardMaterial color={junkColor} roughness={0.3} metalness={0.05} />
-                </mesh>
-              )}
-
-              {/* Category color band at top */}
-              <mesh position={[0, 1.15, 0]}>
-                <boxGeometry args={[1.0, 0.08, 0.6]} />
-                <meshStandardMaterial color={catColor} roughness={0.3} />
-              </mesh>
-
-              {/* Red warning stripe on sides */}
-              <mesh position={[0, 0.55, 0.62]}>
-                <boxGeometry args={[1.4, 0.12, 0.02]} />
-                <meshStandardMaterial color={warningColor} emissive={warningColor} emissiveIntensity={0.4} roughness={0.3} />
-              </mesh>
+              {/* The creative food model */}
+              <JunkFoodModel junk={obs.junk} />
 
               {/* Floating name label */}
               <Text
-                position={[0, 1.45, 0]}
+                position={[0, 1.35, 0]}
                 fontSize={0.22}
                 color="#FFFFFF"
                 anchorX="center"
                 anchorY="middle"
-                outlineWidth={0.03}
+                outlineWidth={0.035}
                 outlineColor="#000000"
-                font="https://fonts.gstatic.com/s/fredokaone/v14/k3kUo8kEI-tA1RRcTZGmTlHGCaen8wf-.woff2"
+                
               >
                 {obs.junk.name}
               </Text>
 
-              {/* Penalty indicator */}
+              {/* Penalty badge */}
               <Text
-                position={[0, 1.2, 0]}
-                fontSize={0.15}
+                position={[0, 1.12, 0]}
+                fontSize={0.16}
                 color={warningColor}
                 anchorX="center"
                 anchorY="middle"
-                outlineWidth={0.02}
+                outlineWidth={0.025}
                 outlineColor="#000000"
-                font="https://fonts.gstatic.com/s/fredokaone/v14/k3kUo8kEI-tA1RRcTZGmTlHGCaen8wf-.woff2"
+                
               >
                 {`-${obs.junk.penalty} HP`}
               </Text>
             </group>
           );
         } else if (obs.type === 'overhead') {
-          // --- Overhead obstacle: hanging junk food sign ---
           return (
             <group key={obs.id} position={[obs.lane * LANE_WIDTH, 0, obs.z]}>
-              {/* Support poles on each side */}
-              <mesh castShadow position={[-0.8, 1.0, 0]}>
-                <cylinderGeometry args={[0.06, 0.06, 2.0, 8]} />
-                <meshStandardMaterial color="#555555" roughness={0.4} metalness={0.3} />
-              </mesh>
-              <mesh castShadow position={[0.8, 1.0, 0]}>
-                <cylinderGeometry args={[0.06, 0.06, 2.0, 8]} />
-                <meshStandardMaterial color="#555555" roughness={0.4} metalness={0.3} />
-              </mesh>
+              {/* Two support poles â€” metallic pipe look */}
+              {[-0.9, 0.9].map((x) => (
+                <group key={x}>
+                  <mesh castShadow position={[x, 1.0, 0]}><cylinderGeometry args={[0.055, 0.06, 2.0, 12]} /><meshStandardMaterial color="#707070" metalness={0.7} roughness={0.2} /></mesh>
+                  {/* Bolt detail */}
+                  <mesh position={[x, 1.98, 0]}><sphereGeometry args={[0.07, 8, 8]} /><meshStandardMaterial color="#505050" metalness={0.8} roughness={0.15} /></mesh>
+                </group>
+              ))}
 
-              {/* Hanging board */}
-              <mesh castShadow receiveShadow position={[0, 1.5, 0]}>
-                <boxGeometry args={[1.8, 1.0, 0.8]} />
-                <meshStandardMaterial color={junkColor} roughness={0.3} metalness={0.05} />
-              </mesh>
+              {/* Hanging food model (scaled up slightly, raised) */}
+              <group position={[0, 1.0, 0]} scale={[1.3, 1.3, 1.3]}>
+                <JunkFoodModel junk={obs.junk} />
+              </group>
 
-              {/* Colored stripe across front */}
-              <mesh position={[0, 1.5, 0.42]}>
-                <boxGeometry args={[1.7, 0.15, 0.02]} />
-                <meshStandardMaterial color={catColor} emissive={catColor} emissiveIntensity={0.3} roughness={0.3} />
-              </mesh>
+              {/* Red warning bar along bottom */}
+              <mesh position={[0, 0.95, 0]}><boxGeometry args={[2.0, 0.08, 0.9]} /><meshStandardMaterial color={warningColor} emissive={warningColor} emissiveIntensity={0.5} /></mesh>
 
-              {/* Red warning bottom edge */}
-              <mesh position={[0, 0.98, 0]}>
-                <boxGeometry args={[1.8, 0.06, 0.82]} />
-                <meshStandardMaterial color={warningColor} emissive={warningColor} emissiveIntensity={0.4} roughness={0.3} />
-              </mesh>
+              {/* Top cross-bar */}
+              <mesh position={[0, 2.0, 0]}><boxGeometry args={[2.0, 0.08, 0.08]} /><meshStandardMaterial color="#505050" metalness={0.7} roughness={0.2} /></mesh>
 
               {/* Name label */}
               <Text
-                position={[0, 1.65, 0.45]}
-                fontSize={0.18}
+                position={[0, 2.25, 0]}
+                fontSize={0.2}
                 color="#FFFFFF"
                 anchorX="center"
                 anchorY="middle"
-                outlineWidth={0.025}
+                outlineWidth={0.03}
                 outlineColor="#000000"
-                font="https://fonts.gstatic.com/s/fredokaone/v14/k3kUo8kEI-tA1RRcTZGmTlHGCaen8wf-.woff2"
+                
               >
                 {obs.junk.name}
               </Text>
               <Text
-                position={[0, 1.4, 0.45]}
-                fontSize={0.13}
+                position={[0, 2.05, 0.5]}
+                fontSize={0.15}
                 color={warningColor}
                 anchorX="center"
                 anchorY="middle"
                 outlineWidth={0.02}
                 outlineColor="#000000"
-                font="https://fonts.gstatic.com/s/fredokaone/v14/k3kUo8kEI-tA1RRcTZGmTlHGCaen8wf-.woff2"
+                
               >
                 {`DUCK! -${obs.junk.penalty} HP`}
               </Text>
             </group>
           );
         } else {
-          // --- Train/Wall: big dangerous wall ---
+          /* â”€â”€ Train / Wall: hazard barrier â”€â”€ */
           return (
             <group key={obs.id} position={[obs.lane * LANE_WIDTH, 0, obs.z]}>
-              {/* Main wall */}
-              <mesh castShadow receiveShadow position={[0, 1.5, 0]}>
-                <boxGeometry args={[2.2, 3, 6]} />
-                <meshStandardMaterial color="#3A3A3A" roughness={0.5} metalness={0.1} />
-              </mesh>
+              {/* Main wall â€“ dark steel */}
+              <mesh castShadow receiveShadow position={[0, 1.5, 0]}><boxGeometry args={[2.4, 3, 6]} /><meshStandardMaterial color="#333" metalness={0.4} roughness={0.35} /></mesh>
 
-              {/* Red danger stripes across front */}
-              {[0.5, 1.0, 1.5, 2.0, 2.5].map((y) => (
+              {/* Chevron hazard stripes across front face */}
+              {[0.4, 0.9, 1.4, 1.9, 2.4].map((y, i) => (
                 <mesh key={y} position={[0, y, 3.02]}>
-                  <boxGeometry args={[2.0, 0.12, 0.02]} />
+                  <boxGeometry args={[2.2, 0.15, 0.02]} />
                   <meshStandardMaterial
-                    color={y % 1 === 0 ? warningColor : '#FFD000'}
-                    emissive={y % 1 === 0 ? warningColor : '#FFD000'}
+                    color={i % 2 === 0 ? '#FFD000' : warningColor}
+                    emissive={i % 2 === 0 ? '#FFD000' : warningColor}
                     emissiveIntensity={0.5}
-                    roughness={0.3}
                   />
                 </mesh>
               ))}
 
-              {/* X cross on face */}
-              <mesh position={[0, 1.5, 3.04]} rotation={[0, 0, Math.PI / 4]}>
-                <boxGeometry args={[0.25, 2.2, 0.02]} />
-                <meshStandardMaterial color={warningColor} emissive={warningColor} emissiveIntensity={0.6} roughness={0.25} />
-              </mesh>
-              <mesh position={[0, 1.5, 3.04]} rotation={[0, 0, -Math.PI / 4]}>
-                <boxGeometry args={[0.25, 2.2, 0.02]} />
-                <meshStandardMaterial color={warningColor} emissive={warningColor} emissiveIntensity={0.6} roughness={0.25} />
-              </mesh>
+              {/* Big red X */}
+              <mesh position={[0, 1.5, 3.04]} rotation={[0, 0, Math.PI / 4]}><boxGeometry args={[0.28, 2.6, 0.02]} /><meshStandardMaterial color={warningColor} emissive={warningColor} emissiveIntensity={0.7} /></mesh>
+              <mesh position={[0, 1.5, 3.04]} rotation={[0, 0, -Math.PI / 4]}><boxGeometry args={[0.28, 2.6, 0.02]} /><meshStandardMaterial color={warningColor} emissive={warningColor} emissiveIntensity={0.7} /></mesh>
+
+              {/* Flashing beacon on top */}
+              <mesh position={[0, 3.15, 0]}><sphereGeometry args={[0.18, 12, 12]} /><meshStandardMaterial color="#FF0000" emissive="#FF0000" emissiveIntensity={1.2} /></mesh>
+              <mesh position={[0, 3.15, 0]}><sphereGeometry args={[0.3, 12, 12]} /><meshStandardMaterial color="#FF0000" emissive="#FF0000" emissiveIntensity={0.3} transparent opacity={0.25} /></mesh>
 
               {/* DANGER label */}
               <Text
                 position={[0, 2.8, 3.06]}
-                fontSize={0.35}
+                fontSize={0.4}
                 color="#FFFFFF"
                 anchorX="center"
                 anchorY="middle"
-                outlineWidth={0.04}
+                outlineWidth={0.05}
                 outlineColor="#B71C1C"
-                font="https://fonts.gstatic.com/s/fredokaone/v14/k3kUo8kEI-tA1RRcTZGmTlHGCaen8wf-.woff2"
+                
               >
                 DANGER
               </Text>

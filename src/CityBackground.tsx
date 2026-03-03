@@ -115,11 +115,35 @@ function RobloxBuildingMesh({ b }: { b: RobloxBuilding }) {
         })
       )}
 
-      {/* Door — simple colored box on ground floor */}
+      {/* Door — with frame and handle */}
       <mesh position={[b.x, 0.75, b.depth / 2 + 0.02]}>
         <boxGeometry args={[b.width * 0.25, 1.5, 0.05]} />
         <meshStandardMaterial color={b.accentColor} roughness={0.3} metalness={0.05} />
       </mesh>
+      {/* Door frame */}
+      <mesh position={[b.x, 0.75, b.depth / 2 + 0.04]}>
+        <boxGeometry args={[b.width * 0.27, 1.55, 0.02]} />
+        <meshStandardMaterial color="#5D4037" roughness={0.5} />
+      </mesh>
+      {/* Door handle */}
+      <mesh position={[b.x + b.width * 0.09, 0.7, b.depth / 2 + 0.06]}>
+        <sphereGeometry args={[0.04, 8, 8]} />
+        <meshStandardMaterial color="#FFD000" metalness={0.8} roughness={0.15} />
+      </mesh>
+
+      {/* Awning over door */}
+      <mesh position={[b.x, 1.6, b.depth / 2 + 0.15]}>
+        <boxGeometry args={[b.width * 0.35, 0.06, 0.3]} />
+        <meshStandardMaterial color={b.accentColor} roughness={0.4} metalness={0.05} />
+      </mesh>
+
+      {/* AC unit on side (sometimes) */}
+      {b.height > 10 && (
+        <mesh position={[b.x + b.width / 2 + 0.15, b.height * 0.6, 0]}>
+          <boxGeometry args={[0.3, 0.25, 0.35]} />
+          <meshStandardMaterial color="#E0E0E0" roughness={0.4} metalness={0.3} />
+        </mesh>
+      )}
 
       {/* Optional flag pole on roof */}
       {b.hasFlag && (

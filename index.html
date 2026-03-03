@@ -7,6 +7,19 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@700;800;900&display=swap" rel="stylesheet" />
     <title>Health Hero</title>
+    <script>
+      window.__HH_ERRORS = [];
+      window.onerror = function(msg, src, line, col, err) {
+        var el = document.getElementById('hh-err');
+        if (!el) { el = document.createElement('pre'); el.id='hh-err'; el.style.cssText='position:fixed;top:0;left:0;right:0;z-index:999999;background:#B71C1C;color:#fff;padding:12px;font:12px monospace;white-space:pre-wrap;max-height:40vh;overflow:auto'; document.body.prepend(el); }
+        el.textContent += 'ERR: ' + msg + '\n' + (err && err.stack ? err.stack : src+':'+line) + '\n\n';
+      };
+      window.addEventListener('unhandledrejection', function(e) {
+        var el = document.getElementById('hh-err');
+        if (!el) { el = document.createElement('pre'); el.id='hh-err'; el.style.cssText='position:fixed;top:0;left:0;right:0;z-index:999999;background:#B71C1C;color:#fff;padding:12px;font:12px monospace;white-space:pre-wrap;max-height:40vh;overflow:auto'; document.body.prepend(el); }
+        el.textContent += 'REJECT: ' + (e.reason && e.reason.stack ? e.reason.stack : e.reason) + '\n\n';
+      });
+    </script>
   </head>
   <body>
     <div id="root"></div>

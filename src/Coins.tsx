@@ -96,65 +96,54 @@ export function HealthyItems() {
         const groupColor = FOOD_GROUP_COLORS[item.item.foodGroup];
         const baseColor = item.item.color;
 
-        /* Roblox SmoothPlastic collectible materials */
-        const mat = <meshStandardMaterial color={baseColor} metalness={0.08} roughness={0.25} envMapIntensity={0.8} />;
-        const glowMat = <meshStandardMaterial color={groupColor} emissive={groupColor} emissiveIntensity={0.8} transparent opacity={0.35} />;
-
-        /* All collectibles rendered as Roblox-style blocks with sparkle ring */
         if (item.item.shape === 'sphere') {
           return (
             <group key={item.id} position={[item.lane * LANE_WIDTH, item.y, item.z]}>
-              {/* Roblox orb collectible */}
               <mesh castShadow>
-                <sphereGeometry args={[0.4, 8, 8]} />
-                {mat}
+                <sphereGeometry args={[0.4, 12, 12]} />
+                <meshStandardMaterial color={baseColor} metalness={0.08} roughness={0.25} envMapIntensity={0.8} />
               </mesh>
-              {/* Stud on top */}
               <mesh position={[0, 0.38, 0]}>
-                <cylinderGeometry args={[0.12, 0.12, 0.08, 8]} />
-                {mat}
+                <cylinderGeometry args={[0.12, 0.12, 0.08, 10]} />
+                <meshStandardMaterial color={baseColor} metalness={0.08} roughness={0.25} envMapIntensity={0.8} />
               </mesh>
-              {/* Sparkle ring */}
               <mesh rotation={[Math.PI / 2, 0, 0]}>
-                <torusGeometry args={[0.55, 0.06, 6, 12]} />
-                {glowMat}
+                <torusGeometry args={[0.55, 0.06, 8, 16]} />
+                <meshStandardMaterial color={groupColor} emissive={groupColor} emissiveIntensity={0.8} transparent opacity={0.35} />
               </mesh>
             </group>
           );
         } else if (item.item.shape === 'cylinder') {
           return (
             <group key={item.id} position={[item.lane * LANE_WIDTH, item.y, item.z]}>
-              {/* Roblox cylinder collectible */}
               <mesh castShadow>
-                <cylinderGeometry args={[0.3, 0.3, 0.6, 8]} />
-                {mat}
+                <cylinderGeometry args={[0.3, 0.3, 0.6, 12]} />
+                <meshStandardMaterial color={baseColor} metalness={0.08} roughness={0.25} envMapIntensity={0.8} />
               </mesh>
               <mesh position={[0, 0.35, 0]}>
-                <cylinderGeometry args={[0.1, 0.1, 0.08, 8]} />
-                {mat}
+                <cylinderGeometry args={[0.1, 0.1, 0.08, 10]} />
+                <meshStandardMaterial color={baseColor} metalness={0.08} roughness={0.25} envMapIntensity={0.8} />
               </mesh>
               <mesh rotation={[Math.PI / 2, 0, 0]}>
-                <torusGeometry args={[0.5, 0.06, 6, 12]} />
-                {glowMat}
+                <torusGeometry args={[0.5, 0.06, 8, 16]} />
+                <meshStandardMaterial color={groupColor} emissive={groupColor} emissiveIntensity={0.8} transparent opacity={0.35} />
               </mesh>
             </group>
           );
         } else {
           return (
             <group key={item.id} position={[item.lane * LANE_WIDTH, item.y, item.z]}>
-              {/* Roblox brick collectible */}
               <mesh castShadow>
                 <boxGeometry args={[0.5, 0.5, 0.5]} />
-                {mat}
+                <meshStandardMaterial color={baseColor} metalness={0.08} roughness={0.25} envMapIntensity={0.8} />
               </mesh>
-              {/* Stud on top */}
               <mesh position={[0, 0.3, 0]}>
-                <cylinderGeometry args={[0.12, 0.12, 0.08, 8]} />
-                {mat}
+                <cylinderGeometry args={[0.12, 0.12, 0.08, 10]} />
+                <meshStandardMaterial color={baseColor} metalness={0.08} roughness={0.25} envMapIntensity={0.8} />
               </mesh>
               <mesh rotation={[Math.PI / 2, 0, 0]}>
-                <torusGeometry args={[0.5, 0.06, 6, 12]} />
-                {glowMat}
+                <torusGeometry args={[0.5, 0.06, 8, 16]} />
+                <meshStandardMaterial color={groupColor} emissive={groupColor} emissiveIntensity={0.8} transparent opacity={0.35} />
               </mesh>
             </group>
           );
