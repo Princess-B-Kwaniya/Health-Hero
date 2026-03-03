@@ -84,7 +84,7 @@ function createLaneTexture() {
   ctx.setLineDash([40, 28]);
   ctx.lineWidth = 8;
   ctx.strokeStyle = '#F5CD30';
-  [178, 334].forEach(lx => {
+  [213, 299].forEach(lx => {
     ctx.beginPath();
     ctx.moveTo(lx, 0);
     ctx.lineTo(lx, 512);

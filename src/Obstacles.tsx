@@ -6,13 +6,13 @@ import * as THREE from 'three';
 
 const LANE_WIDTH = 2.5;
 const SPAWN_Z = -150;
-const FONT_URL = 'https://fonts.gstatic.com/s/fredokaone/v14/k3kUo8kEI-tA1RRcTZGmTlHGCaen8wf-.woff2';
+
 
 interface ObstacleData {
   id: number;
   lane: number;
   z: number;
-  type: 'barrier' | 'overhead' | 'train';
+  type: 'barrier' | 'overhead' | 'lowWall' | 'highBeam';
   junk: JunkItemDef;
 }
 
@@ -315,7 +315,7 @@ export function Obstacles() {
 
       // Collision detection
       for (const obs of newObstacles) {
-        const obsDepth = obs.type === 'train' ? 6 : 1;
+        const obsDepth = (obs.type === 'lowWall' || obs.type === 'highBeam') ? 3 : 1;
         const obsMinZ = obs.z - obsDepth / 2;
         const obsMaxZ = obs.z + obsDepth / 2;
 
@@ -328,14 +328,19 @@ export function Obstacles() {
             if (pMinY < 1) hit = true;
           } else if (obs.type === 'overhead') {
             if (pMaxY > 0.5) hit = true;
-          } else if (obs.type === 'train') {
-            hit = true;
+          } else if (obs.type === 'lowWall') {
+            // Low wall — must JUMP over (hits if player is low)
+            if (pMinY < 0.9) hit = true;
+          } else if (obs.type === 'highBeam') {
+            // High beam — must ROLL under (hits if player is tall/standing)
+            if (pMaxY > 0.6) hit = true;
           }
 
           if (hit) {
-            if (obs.type === 'train') {
+            if (obs.type === 'lowWall' || obs.type === 'highBeam') {
+              // Big boxes = instant game over
               endGame();
-              return prev;
+              return [];
             }
             hitJunkFood(
               obs.junk.penalty,
@@ -365,9 +370,10 @@ export function Obstacles() {
           usedLanes.add(lane);
 
           const rand = Math.random();
-          let type: 'barrier' | 'overhead' | 'train' = 'barrier';
-          if (rand > 0.85) type = 'train';
-          else if (rand > 0.45) type = 'overhead';
+          let type: 'barrier' | 'overhead' | 'lowWall' | 'highBeam' = 'barrier';
+          if (rand > 0.82) type = 'lowWall';
+          else if (rand > 0.65) type = 'highBeam';
+          else if (rand > 0.35) type = 'overhead';
 
           newObstacles.push({
             id: obstacleId.current++,
@@ -426,36 +432,64 @@ export function Obstacles() {
 
             </group>
           );
-        } else {
-          /* â”€â”€ Train / Wall: hazard barrier â”€â”€ */
+        } else if (obs.type === 'lowWall') {
           return (
             <group key={obs.id} position={[obs.lane * LANE_WIDTH, 0, obs.z]}>
-              {/* Main wall â€“ dark steel */}
-              <mesh castShadow receiveShadow position={[0, 1.5, 0]}><boxGeometry args={[2.4, 3, 6]} /><meshStandardMaterial color="#333" metalness={0.4} roughness={0.35} /></mesh>
-
-              {/* Chevron hazard stripes across front face */}
-              {[0.4, 0.9, 1.4, 1.9, 2.4].map((y, i) => (
-                <mesh key={y} position={[0, y, 3.02]}>
-                  <boxGeometry args={[2.2, 0.15, 0.02]} />
-                  <meshStandardMaterial
-                    color={i % 2 === 0 ? '#FFD000' : warningColor}
-                    emissive={i % 2 === 0 ? '#FFD000' : warningColor}
-                    emissiveIntensity={0.5}
-                  />
+              <mesh castShadow receiveShadow position={[0, 0.45, 0]}>
+                <boxGeometry args={[2.4, 0.9, 3]} />
+                <meshStandardMaterial color="#E65100" roughness={0.4} metalness={0.15} />
+              </mesh>
+              {[-0.6, 0, 0.6].map((x) => (
+                <mesh key={x} position={[x, 0.45, 1.52]}>
+                  <boxGeometry args={[0.4, 0.7, 0.02]} />
+                  <meshStandardMaterial color="#FFD000" emissive="#FFD000" emissiveIntensity={0.4} />
                 </mesh>
               ))}
-
-              {/* Big red X */}
-              <mesh position={[0, 1.5, 3.04]} rotation={[0, 0, Math.PI / 4]}><boxGeometry args={[0.28, 2.6, 0.02]} /><meshStandardMaterial color={warningColor} emissive={warningColor} emissiveIntensity={0.7} /></mesh>
-              <mesh position={[0, 1.5, 3.04]} rotation={[0, 0, -Math.PI / 4]}><boxGeometry args={[0.28, 2.6, 0.02]} /><meshStandardMaterial color={warningColor} emissive={warningColor} emissiveIntensity={0.7} /></mesh>
-
-              {/* Flashing beacon on top */}
-              <mesh position={[0, 3.15, 0]}><sphereGeometry args={[0.18, 12, 12]} /><meshStandardMaterial color="#FF0000" emissive="#FF0000" emissiveIntensity={1.2} /></mesh>
-              <mesh position={[0, 3.15, 0]}><sphereGeometry args={[0.3, 12, 12]} /><meshStandardMaterial color="#FF0000" emissive="#FF0000" emissiveIntensity={0.3} transparent opacity={0.25} /></mesh>
-
-
+              {[-0.8, 0.8].map((x) => (
+                <group key={x} position={[x, 0.45, 1.53]}>
+                  <mesh><boxGeometry args={[0.08, 0.5, 0.02]} /><meshStandardMaterial color="#FFFFFF" emissive="#FFFFFF" emissiveIntensity={0.6} /></mesh>
+                  <mesh position={[0, 0.3, 0]} rotation={[0, 0, Math.PI / 4]}><boxGeometry args={[0.08, 0.22, 0.02]} /><meshStandardMaterial color="#FFFFFF" emissive="#FFFFFF" emissiveIntensity={0.6} /></mesh>
+                  <mesh position={[0, 0.3, 0]} rotation={[0, 0, -Math.PI / 4]}><boxGeometry args={[0.08, 0.22, 0.02]} /><meshStandardMaterial color="#FFFFFF" emissive="#FFFFFF" emissiveIntensity={0.6} /></mesh>
+                </group>
+              ))}
+              <group position={[0, 0.9, 0]}>
+                <JunkFoodModel junk={obs.junk} />
+              </group>
+              <PulseRing color="#FF9800" radius={1.4} />
             </group>
           );
+        } else if (obs.type === 'highBeam') {
+          return (
+            <group key={obs.id} position={[obs.lane * LANE_WIDTH, 0, obs.z]}>
+              {[-1.1, 1.1].map((x) => (
+                <mesh key={x} castShadow position={[x, 1.25, 0]}>
+                  <boxGeometry args={[0.2, 2.5, 0.2]} />
+                  <meshStandardMaterial color="#455A64" metalness={0.6} roughness={0.25} />
+                </mesh>
+              ))}
+              <mesh castShadow receiveShadow position={[0, 1.3, 0]}>
+                <boxGeometry args={[2.4, 1.2, 3]} />
+                <meshStandardMaterial color="#7B1FA2" roughness={0.35} metalness={0.2} />
+              </mesh>
+              <mesh position={[0, 0.72, 1.52]}>
+                <boxGeometry args={[2.2, 0.08, 0.02]} />
+                <meshStandardMaterial color="#FFD000" emissive="#FFD000" emissiveIntensity={0.5} />
+              </mesh>
+              {[-0.7, 0, 0.7].map((x) => (
+                <group key={x} position={[x, 0.9, 1.53]}>
+                  <mesh><boxGeometry args={[0.08, 0.35, 0.02]} /><meshStandardMaterial color="#00E5FF" emissive="#00E5FF" emissiveIntensity={0.6} /></mesh>
+                  <mesh position={[0, -0.22, 0]} rotation={[0, 0, Math.PI / 4]}><boxGeometry args={[0.08, 0.18, 0.02]} /><meshStandardMaterial color="#00E5FF" emissive="#00E5FF" emissiveIntensity={0.6} /></mesh>
+                  <mesh position={[0, -0.22, 0]} rotation={[0, 0, -Math.PI / 4]}><boxGeometry args={[0.08, 0.18, 0.02]} /><meshStandardMaterial color="#00E5FF" emissive="#00E5FF" emissiveIntensity={0.6} /></mesh>
+                </group>
+              ))}
+              <group position={[0, 0.2, 0]} scale={[0.8, 0.8, 0.8]}>
+                <JunkFoodModel junk={obs.junk} />
+              </group>
+              <PulseRing color="#7B1FA2" radius={1.4} />
+            </group>
+          );
+        } else {
+          return null;
         }
       })}
     </>
