@@ -81,8 +81,6 @@ function generateBuildings(startZ: number, count: number, idOffset: number): Rob
 
 /* ── Simple Roblox block building (flat-color, SmoothPlastic) ── */
 function RobloxBuildingMesh({ b }: { b: RobloxBuilding }) {
-  const mat = <meshStandardMaterial roughness={0.3} metalness={0.05} />;
-
   return (
     <group>
       {/* Main body — bright solid color */}

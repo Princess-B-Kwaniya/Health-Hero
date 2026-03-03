@@ -1,6 +1,6 @@
 import React from 'react';
 import { Canvas } from '@react-three/fiber';
-import { Sky, Environment } from '@react-three/drei';
+import { Sky } from '@react-three/drei';
 import { Player } from './Player';
 import { Obstacles } from './Obstacles';
 import { Ground } from './Ground';

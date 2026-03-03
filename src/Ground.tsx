@@ -112,12 +112,7 @@ function createLaneTexture() {
     ctx.stroke();
   });
 
-  // Occasional crosswalk markings
-  ctx.fillStyle = '#FFFFFF';
-  for (let stripe = 0; stripe < 6; stripe++) {
-    ctx.fillRect(60 + stripe * 70, 240, 50, 8);
-    ctx.fillRect(60 + stripe * 70, 252, 50, 8);
-  }
+
 
   const tex = new THREE.CanvasTexture(canvas);
   tex.wrapS = THREE.RepeatWrapping;

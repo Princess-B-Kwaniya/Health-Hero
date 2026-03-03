@@ -1,6 +1,5 @@
-﻿import { useRef, useState, useMemo } from 'react';
+﻿import { useRef, useState } from 'react';
 import { useFrame } from '@react-three/fiber';
-import { Text } from '@react-three/drei';
 import { useGameStore } from './store';
 import { JunkItemDef, getRandomJunkItem } from './foodData';
 import * as THREE from 'three';
@@ -398,33 +397,7 @@ export function Obstacles() {
               {/* The creative food model */}
               <JunkFoodModel junk={obs.junk} />
 
-              {/* Floating name label */}
-              <Text
-                position={[0, 1.35, 0]}
-                fontSize={0.22}
-                color="#FFFFFF"
-                anchorX="center"
-                anchorY="middle"
-                outlineWidth={0.035}
-                outlineColor="#000000"
-                
-              >
-                {obs.junk.name}
-              </Text>
 
-              {/* Penalty badge */}
-              <Text
-                position={[0, 1.12, 0]}
-                fontSize={0.16}
-                color={warningColor}
-                anchorX="center"
-                anchorY="middle"
-                outlineWidth={0.025}
-                outlineColor="#000000"
-                
-              >
-                {`-${obs.junk.penalty} HP`}
-              </Text>
             </group>
           );
         } else if (obs.type === 'overhead') {
@@ -450,31 +423,7 @@ export function Obstacles() {
               {/* Top cross-bar */}
               <mesh position={[0, 2.0, 0]}><boxGeometry args={[2.0, 0.08, 0.08]} /><meshStandardMaterial color="#505050" metalness={0.7} roughness={0.2} /></mesh>
 
-              {/* Name label */}
-              <Text
-                position={[0, 2.25, 0]}
-                fontSize={0.2}
-                color="#FFFFFF"
-                anchorX="center"
-                anchorY="middle"
-                outlineWidth={0.03}
-                outlineColor="#000000"
-                
-              >
-                {obs.junk.name}
-              </Text>
-              <Text
-                position={[0, 2.05, 0.5]}
-                fontSize={0.15}
-                color={warningColor}
-                anchorX="center"
-                anchorY="middle"
-                outlineWidth={0.02}
-                outlineColor="#000000"
-                
-              >
-                {`DUCK! -${obs.junk.penalty} HP`}
-              </Text>
+
             </group>
           );
         } else {
@@ -504,19 +453,7 @@ export function Obstacles() {
               <mesh position={[0, 3.15, 0]}><sphereGeometry args={[0.18, 12, 12]} /><meshStandardMaterial color="#FF0000" emissive="#FF0000" emissiveIntensity={1.2} /></mesh>
               <mesh position={[0, 3.15, 0]}><sphereGeometry args={[0.3, 12, 12]} /><meshStandardMaterial color="#FF0000" emissive="#FF0000" emissiveIntensity={0.3} transparent opacity={0.25} /></mesh>
 
-              {/* DANGER label */}
-              <Text
-                position={[0, 2.8, 3.06]}
-                fontSize={0.4}
-                color="#FFFFFF"
-                anchorX="center"
-                anchorY="middle"
-                outlineWidth={0.05}
-                outlineColor="#B71C1C"
-                
-              >
-                DANGER
-              </Text>
+
             </group>
           );
         }
