@@ -5,11 +5,6 @@ import * as THREE from 'three';
 
 const LANE_WIDTH = 2.5;
 
-/* ── Roblox "SmoothPlastic" material preset ── */
-const plastic = (color: string) => (
-  <meshStandardMaterial color={color} roughness={0.3} metalness={0.05} />
-);
-
 export function Player() {
   const playerRef = useRef<THREE.Group>(null);
   const leftArmRef = useRef<THREE.Group>(null);
@@ -85,9 +80,9 @@ export function Player() {
       playerRef.current.scale.y = THREE.MathUtils.lerp(playerRef.current.scale.y, 1, 15 * delta);
     }
 
-    // Running animation
+    // Running animation (Pivots adjusted for blocky limbs)
     runTime.current += delta * 10;
-    const swing = Math.sin(runTime.current) * 0.7;
+    const swing = Math.sin(runTime.current) * 0.6;
     if (leftArmRef.current) leftArmRef.current.rotation.x = swing;
     if (rightArmRef.current) rightArmRef.current.rotation.x = -swing;
     if (leftLegRef.current) leftLegRef.current.rotation.x = -swing * 0.8;
@@ -96,122 +91,110 @@ export function Player() {
     setPlayerState(lane, playerRef.current.position.y, playerRef.current.scale.y);
   });
 
-  // ── Classic Roblox Color Palette ──
-  const skinYellow = '#F3D35B';      // Classic Roblox yellow
-  const torsoColor = '#00A2FF';      // Bright Really Blue
-  const pantsColor = '#194D33';      // Dark green (Earth Green)
-  const shoeColor = '#624732';       // Reddish brown
-  const hatColor = '#A3D44E';        // Lime green
+  // Modern Roblox-style Color Palette
+  const skin = '#F1C27D';
+  const shirt = '#212121'; // Edgy dark grey/black
+  const pants = '#1565C0'; // Denim blue
+  const shoe = '#ECEFF1';  // Fresh white sneakers
+  const capColor = '#D32F2F'; // Red accent
 
   return (
     <group ref={playerRef as any} position={[0, 0.5, 0]} rotation={[0, Math.PI, 0]}>
-      {/* === TORSO (Classic Roblox brick proportions) === */}
+      {/* Blocky Torso */}
       <mesh castShadow position={[0, 0.15, 0]}>
-        <boxGeometry args={[0.8, 0.55, 0.4]} />
-        {plastic(torsoColor)}
-      </mesh>
-      {/* Roblox logo decal on chest */}
-      <mesh position={[0, 0.18, 0.205]}>
-        <boxGeometry args={[0.2, 0.2, 0.01]} />
-        <meshStandardMaterial color="#FFFFFF" roughness={0.2} metalness={0.0} />
+        <boxGeometry args={[0.7, 0.5, 0.35]} />
+        <meshStandardMaterial color={shirt} roughness={0.8} />
       </mesh>
 
-      {/* === LEFT ARM === */}
-      <group ref={leftArmRef} position={[-0.55, 0.35, 0]}>
-        <mesh castShadow position={[0, -0.2, 0]}>
-          <boxGeometry args={[0.28, 0.5, 0.28]} />
-          {plastic(skinYellow)}
+      {/* Left Arm */}
+      <group ref={leftArmRef} position={[-0.5, 0.35, 0]}>
+        {/* Arm Skin */}
+        <mesh castShadow position={[0, -0.225, 0]}>
+          <boxGeometry args={[0.25, 0.45, 0.25]} />
+          <meshStandardMaterial color={skin} roughness={0.8} />
         </mesh>
-        {/* Sleeve */}
-        <mesh castShadow position={[0, -0.02, 0]}>
-          <boxGeometry args={[0.3, 0.18, 0.3]} />
-          {plastic(torsoColor)}
-        </mesh>
-        {/* Hand sphere */}
-        <mesh castShadow position={[0, -0.48, 0]}>
-          <sphereGeometry args={[0.1, 8, 8]} />
-          {plastic(skinYellow)}
+        {/* T-shirt Sleeve */}
+        <mesh castShadow position={[0, -0.05, 0]}>
+          <boxGeometry args={[0.27, 0.15, 0.27]} />
+          <meshStandardMaterial color={shirt} roughness={0.8} />
         </mesh>
       </group>
 
-      {/* === RIGHT ARM === */}
-      <group ref={rightArmRef} position={[0.55, 0.35, 0]}>
-        <mesh castShadow position={[0, -0.2, 0]}>
-          <boxGeometry args={[0.28, 0.5, 0.28]} />
-          {plastic(skinYellow)}
+      {/* Right Arm */}
+      <group ref={rightArmRef} position={[0.5, 0.35, 0]}>
+        {/* Arm Skin */}
+        <mesh castShadow position={[0, -0.225, 0]}>
+          <boxGeometry args={[0.25, 0.45, 0.25]} />
+          <meshStandardMaterial color={skin} roughness={0.8} />
         </mesh>
-        <mesh castShadow position={[0, -0.02, 0]}>
-          <boxGeometry args={[0.3, 0.18, 0.3]} />
-          {plastic(torsoColor)}
-        </mesh>
-        <mesh castShadow position={[0, -0.48, 0]}>
-          <sphereGeometry args={[0.1, 8, 8]} />
-          {plastic(skinYellow)}
+        {/* T-shirt Sleeve */}
+        <mesh castShadow position={[0, -0.05, 0]}>
+          <boxGeometry args={[0.27, 0.15, 0.27]} />
+          <meshStandardMaterial color={shirt} roughness={0.8} />
         </mesh>
       </group>
 
-      {/* === LEFT LEG === */}
+      {/* Left Leg */}
       <group ref={leftLegRef} position={[-0.2, -0.1, 0]}>
+        {/* Pant Leg */}
         <mesh castShadow position={[0, -0.15, 0]}>
-          <boxGeometry args={[0.35, 0.35, 0.35]} />
-          {plastic(pantsColor)}
+          <boxGeometry args={[0.28, 0.3, 0.28]} />
+          <meshStandardMaterial color={pants} roughness={0.9} />
         </mesh>
-        {/* Chunky Roblox foot */}
-        <mesh castShadow position={[0, -0.38, 0.05]}>
-          <boxGeometry args={[0.35, 0.12, 0.4]} />
-          {plastic(shoeColor)}
+        {/* Sneaker */}
+        <mesh castShadow position={[0, -0.35, 0.05]}>
+          <boxGeometry args={[0.3, 0.1, 0.35]} />
+          <meshStandardMaterial color={shoe} roughness={0.5} />
         </mesh>
       </group>
 
-      {/* === RIGHT LEG === */}
+      {/* Right Leg */}
       <group ref={rightLegRef} position={[0.2, -0.1, 0]}>
+        {/* Pant Leg */}
         <mesh castShadow position={[0, -0.15, 0]}>
-          <boxGeometry args={[0.35, 0.35, 0.35]} />
-          {plastic(pantsColor)}
+          <boxGeometry args={[0.28, 0.3, 0.28]} />
+          <meshStandardMaterial color={pants} roughness={0.9} />
         </mesh>
-        <mesh castShadow position={[0, -0.38, 0.05]}>
-          <boxGeometry args={[0.35, 0.12, 0.4]} />
-          {plastic(shoeColor)}
+        {/* Sneaker */}
+        <mesh castShadow position={[0, -0.35, 0.05]}>
+          <boxGeometry args={[0.3, 0.1, 0.35]} />
+          <meshStandardMaterial color={shoe} roughness={0.5} />
         </mesh>
       </group>
 
-      {/* === HEAD (Oversized classic Roblox head) === */}
-      <group position={[0, 0.7, 0]}>
+      {/* Head */}
+      <group position={[0, 0.65, 0]}>
+        {/* Blocky Head Mesh */}
         <mesh castShadow>
-          <boxGeometry args={[0.6, 0.6, 0.6]} />
-          {plastic(skinYellow)}
+          <boxGeometry args={[0.45, 0.45, 0.45]} />
+          <meshStandardMaterial color={skin} roughness={0.8} />
         </mesh>
 
-        {/* Classic Roblox smiley face */}
+        {/* Flat Classic Decal-style Face */}
         {/* Left Eye */}
-        <mesh position={[-0.12, 0.06, 0.305]}>
-          <circleGeometry args={[0.05, 16]} />
-          <meshBasicMaterial color="#1A1A1A" />
+        <mesh position={[-0.1, 0.05, 0.23]}>
+          <boxGeometry args={[0.06, 0.06, 0.01]} />
+          <meshBasicMaterial color="#111" />
         </mesh>
         {/* Right Eye */}
-        <mesh position={[0.12, 0.06, 0.305]}>
-          <circleGeometry args={[0.05, 16]} />
-          <meshBasicMaterial color="#1A1A1A" />
+        <mesh position={[0.1, 0.05, 0.23]}>
+          <boxGeometry args={[0.06, 0.06, 0.01]} />
+          <meshBasicMaterial color="#111" />
         </mesh>
-        {/* Classic Roblox smile */}
-        <mesh position={[0, -0.1, 0.305]}>
-          <torusGeometry args={[0.1, 0.02, 8, 16, Math.PI]} />
-          <meshBasicMaterial color="#1A1A1A" />
+        {/* Mouth */}
+        <mesh position={[0, -0.1, 0.23]}>
+          <boxGeometry args={[0.15, 0.04, 0.01]} />
+          <meshBasicMaterial color="#111" />
         </mesh>
 
-        {/* === Roblox Beanie Hat === */}
-        <mesh castShadow position={[0, 0.35, 0]}>
-          <sphereGeometry args={[0.33, 12, 8, 0, Math.PI * 2, 0, Math.PI / 2]} />
-          {plastic(hatColor)}
+        {/* Backwards Baseball Cap */}
+        <mesh castShadow position={[0, 0.25, 0]}>
+          <boxGeometry args={[0.47, 0.1, 0.47]} />
+          <meshStandardMaterial color={capColor} roughness={0.9} />
         </mesh>
-        <mesh castShadow position={[0, 0.3, 0]}>
-          <cylinderGeometry args={[0.34, 0.34, 0.06, 12]} />
-          {plastic(hatColor)}
-        </mesh>
-        {/* Pom-pom */}
-        <mesh castShadow position={[0, 0.48, 0]}>
-          <sphereGeometry args={[0.08, 8, 8]} />
-          {plastic('#FFFFFF')}
+        <mesh castShadow position={[0, 0.2, -0.3]}>
+          <boxGeometry args={[0.47, 0.05, 0.2]} />
+          <meshStandardMaterial color={capColor} roughness={0.9} />
         </mesh>
       </group>
     </group>
