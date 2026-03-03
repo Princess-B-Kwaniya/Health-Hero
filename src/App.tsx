@@ -1,7 +1,8 @@
 import { Game } from './Game';
 import { useGameStore, FoodGroup } from './store';
 import { FOOD_GROUP_LABELS, FOOD_GROUP_COLORS } from './foodData';
-import { Heart, Play, RotateCcw, Footprints } from 'lucide-react';
+import { Heart, Play, RotateCcw, Footprints, BookOpen } from 'lucide-react';
+import { LearnPage } from './LearnPage';
 
 const FOOD_GROUPS: FoodGroup[] = ['fruits', 'vegetables', 'proteins', 'grains', 'dairy', 'hydration'];
 
@@ -18,6 +19,7 @@ export default function App() {
   const comboMessage = useGameStore((state) => state.comboMessage);
   const longestCleanRun = useGameStore((state) => state.longestCleanRun);
   const startGame = useGameStore((state) => state.startGame);
+  const goToLearn = useGameStore((state) => state.goToLearn);
 
   // Health meter color
   const healthColor = healthMeter > 60 ? '#4CAF50' : healthMeter > 30 ? '#FFD54F' : '#EF5350';
@@ -137,13 +139,23 @@ export default function App() {
 
             <button
               onClick={startGame}
-              className="w-full text-white rounded-lg py-4 font-bold text-lg flex items-center justify-center gap-2 transition-all shadow-lg uppercase tracking-wide"
+              className="w-full text-white rounded-lg py-4 font-bold text-lg flex items-center justify-center gap-2 transition-all shadow-lg uppercase tracking-wide mb-3"
               style={{ background: 'linear-gradient(180deg, #00E639 0%, #00B82E 100%)', boxShadow: '0 6px 20px rgba(0,230,57,0.35)' }}
               onMouseEnter={(e) => e.currentTarget.style.background = 'linear-gradient(180deg, #00FF41 0%, #00CC33 100%)'}
               onMouseLeave={(e) => e.currentTarget.style.background = 'linear-gradient(180deg, #00E639 0%, #00B82E 100%)'}
             >
               <Play className="w-5 h-5 fill-current" />
               START RUNNING!
+            </button>
+            <button
+              onClick={goToLearn}
+              className="w-full rounded-lg py-3 font-bold text-sm flex items-center justify-center gap-2 transition-all uppercase tracking-wide border"
+              style={{ background: 'transparent', color: '#FFD000', borderColor: '#FFD000' }}
+              onMouseEnter={(e) => { e.currentTarget.style.background = '#FFD00022'; }}
+              onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; }}
+            >
+              <BookOpen className="w-4 h-4" />
+              LEARN ABOUT FOOD
             </button>
           </div>
         </div>
@@ -222,6 +234,17 @@ export default function App() {
             </div>
 
             <button
+              onClick={goToLearn}
+              className="w-full rounded-lg py-3 mb-3 font-bold text-sm flex items-center justify-center gap-2 transition-all uppercase tracking-wide border"
+              style={{ background: 'transparent', color: '#FFD000', borderColor: '#FFD000' }}
+              onMouseEnter={(e) => { e.currentTarget.style.background = '#FFD00022'; }}
+              onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; }}
+            >
+              <BookOpen className="w-4 h-4" />
+              LEARN WHY
+            </button>
+
+            <button
               onClick={startGame}
               className="w-full text-white rounded-lg py-4 font-bold text-lg flex items-center justify-center gap-2 transition-all shadow-lg uppercase tracking-wide"
               style={{ background: 'linear-gradient(180deg, #00E639 0%, #00B82E 100%)', boxShadow: '0 6px 20px rgba(0,230,57,0.35)' }}
@@ -234,6 +257,9 @@ export default function App() {
           </div>
         </div>
       )}
+
+      {/* Learn / Education Page */}
+      {status === 'learn' && <LearnPage />}
     </div>
   );
 }

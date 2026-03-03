@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 
-export type GameStatus = 'start' | 'playing' | 'gameover';
+export type GameStatus = 'start' | 'playing' | 'gameover' | 'learn';
 
 export type FoodGroup = 'fruits' | 'vegetables' | 'proteins' | 'grains' | 'dairy' | 'hydration';
 
@@ -54,6 +54,8 @@ interface GameState {
   clearFact: () => void;
   clearEffect: () => void;
   tick: (time: number) => void;
+  goToLearn: () => void;
+  goToStart: () => void;
 }
 
 const INITIAL_FOOD_COUNTS: FoodGroupCounts = {
@@ -219,6 +221,8 @@ export const useGameStore = create<GameState>((set, get) => ({
 
   clearFact: () => set({ activeFact: null }),
   clearEffect: () => set({ activeEffect: 'none', effectExpiry: 0 }),
+  goToLearn: () => set({ status: 'learn' }),
+  goToStart: () => set({ status: 'start' }),
 
   tick: (time) => {
     const state = get();
