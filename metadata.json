@@ -1,0 +1,5 @@
+{
+  "name": "Cube Surfer",
+  "description": "An endless runner game in 3D where you dodge obstacles and collect coins.",
+  "requestFramePermissions": []
+}
