@@ -1,1 +1,18 @@
 @import "tailwindcss";
+
+/* Prevent double-tap zoom and improve touch responsiveness on mobile */
+html {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Prevent pull-to-refresh and overscroll bounce during gameplay */
+body {
+  overscroll-behavior: none;
+}
+
+/* Prevent text selection on touch controls */
+button {
+  -webkit-user-select: none;
+  user-select: none;
+}

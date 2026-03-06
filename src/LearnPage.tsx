@@ -99,9 +99,9 @@ function HeroAvatar({ size = 64 }: { size?: number }) {
 /* ── Speech bubble ── */
 function SpeechBubble({ children, color = '#2A2A3E' }: { children: React.ReactNode; color?: string }) {
   return (
-    <div className="relative rounded-2xl px-5 py-4 border-2" style={{ background: color, borderColor: '#3D3D5C' }}>
+    <div className="relative rounded-xl sm:rounded-2xl px-3 py-3 sm:px-5 sm:py-4 border-2" style={{ background: color, borderColor: '#3D3D5C' }}>
       {/* Triangle pointer */}
-      <div style={{ position: 'absolute', left: -12, top: 18, width: 0, height: 0, borderTop: '8px solid transparent', borderBottom: '8px solid transparent', borderRight: `12px solid ${color}` }} />
+      <div className="hidden sm:block" style={{ position: 'absolute', left: -12, top: 18, width: 0, height: 0, borderTop: '8px solid transparent', borderBottom: '8px solid transparent', borderRight: `12px solid ${color}` }} />
       {children}
     </div>
   );
@@ -143,7 +143,7 @@ export function LearnPage() {
       className="absolute inset-0 z-50 overflow-y-auto"
       style={{ background: '#1A1A2E', fontFamily: "'Fredoka One', 'Nunito', sans-serif" }}
     >
-      <div className="max-w-3xl mx-auto px-6 py-8">
+      <div className="max-w-3xl mx-auto px-3 sm:px-6 py-4 sm:py-8">
         {/* Back button */}
         <button
           onClick={goToStart}
@@ -157,13 +157,14 @@ export function LearnPage() {
         </button>
 
         {/* ─── Hero Introduction ─── */}
-        <div className="flex items-start gap-4 mb-8">
-          <HeroAvatar size={80} />
+        <div className="flex items-start gap-3 sm:gap-4 mb-6 sm:mb-8">
+          <div className="hidden sm:block"><HeroAvatar size={80} /></div>
+          <div className="block sm:hidden"><HeroAvatar size={48} /></div>
           <SpeechBubble>
-            <h1 className="text-3xl font-black uppercase tracking-tight mb-1" style={{ color: '#00E639' }}>
+            <h1 className="text-xl sm:text-3xl font-black uppercase tracking-tight mb-1" style={{ color: '#00E639' }}>
               Hey there! I am Health Hero!
             </h1>
-            <p className="text-lg" style={{ color: '#C0C0E0' }}>
+            <p className="text-sm sm:text-lg" style={{ color: '#C0C0E0' }}>
               Let me teach you about food! Some food gives you power, and some food takes it away.
               Ready to learn? Let's go!
             </p>
@@ -171,26 +172,27 @@ export function LearnPage() {
         </div>
 
         {/* ─── How Food Works ─── */}
-        <div className="flex items-start gap-4 mb-8">
-          <HeroAvatar size={60} />
+        <div className="flex items-start gap-3 sm:gap-4 mb-6 sm:mb-8">
+          <div className="hidden sm:block"><HeroAvatar size={60} /></div>
+          <div className="block sm:hidden"><HeroAvatar size={40} /></div>
           <SpeechBubble>
-            <h2 className="text-2xl font-black uppercase mb-2" style={{ color: '#FFD000' }}>
+            <h2 className="text-lg sm:text-2xl font-black uppercase mb-2" style={{ color: '#FFD000' }}>
               How Does Food Work?
             </h2>
-            <p className="text-lg mb-3" style={{ color: '#C0C0E0' }}>
+            <p className="text-sm sm:text-lg mb-3" style={{ color: '#C0C0E0' }}>
               Think of your body like a car. Food is the fuel!
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="rounded-xl p-4 border-2" style={{ background: '#0D2B0D', borderColor: '#00E639' }}>
-                <div className="text-xl font-black mb-2" style={{ color: '#00E639' }}>Good Food = Power UP!</div>
-                <p className="text-base" style={{ color: '#C0C0E0' }}>
+              <div className="rounded-xl p-3 sm:p-4 border-2" style={{ background: '#0D2B0D', borderColor: '#00E639' }}>
+                <div className="text-base sm:text-xl font-black mb-2" style={{ color: '#00E639' }}>Good Food = Power UP!</div>
+                <p className="text-sm sm:text-base" style={{ color: '#C0C0E0' }}>
                   Healthy food is like super fuel. It gives you energy to run, jump, think,
                   and play! The more you eat, the stronger you get!
                 </p>
               </div>
-              <div className="rounded-xl p-4 border-2" style={{ background: '#2B0D0D', borderColor: '#FF4444' }}>
-                <div className="text-xl font-black mb-2" style={{ color: '#FF4444' }}>Junk Food = Power DOWN!</div>
-                <p className="text-base" style={{ color: '#C0C0E0' }}>
+              <div className="rounded-xl p-3 sm:p-4 border-2" style={{ background: '#2B0D0D', borderColor: '#FF4444' }}>
+                <div className="text-base sm:text-xl font-black mb-2" style={{ color: '#FF4444' }}>Junk Food = Power DOWN!</div>
+                <p className="text-sm sm:text-base" style={{ color: '#C0C0E0' }}>
                   Junk food tastes yummy, but it takes away your power! It makes you feel
                   tired and slow. Eat too much and... game over!
                 </p>
@@ -200,13 +202,14 @@ export function LearnPage() {
         </div>
 
         {/* ─── The Healthy Foods ─── */}
-        <div className="flex items-start gap-4 mb-4">
-          <HeroAvatar size={60} />
+        <div className="flex items-start gap-3 sm:gap-4 mb-4">
+          <div className="hidden sm:block"><HeroAvatar size={60} /></div>
+          <div className="block sm:hidden"><HeroAvatar size={40} /></div>
           <SpeechBubble>
-            <h2 className="text-2xl font-black uppercase mb-1" style={{ color: '#00E639' }}>
+            <h2 className="text-lg sm:text-2xl font-black uppercase mb-1" style={{ color: '#00E639' }}>
               The Good Stuff - Healthy Food!
             </h2>
-            <p className="text-lg" style={{ color: '#C0C0E0' }}>
+            <p className="text-sm sm:text-lg" style={{ color: '#C0C0E0' }}>
               There are 6 types of healthy food. Try to eat from ALL of them every day!
               In the game, if you collect 5 of the same type, you get double points!
             </p>
@@ -218,33 +221,31 @@ export function LearnPage() {
             const items = HEALTHY_ITEMS.filter((h) => h.foodGroup === fg);
             const info = GROUP_INFO[fg];
             return (
-              <div
-                key={fg}
-                className="rounded-2xl p-5 border-2"
+                <div className="rounded-2xl p-3 sm:p-5 border-2"
                 style={{ background: '#2A2A3E', borderColor: FOOD_GROUP_COLORS[fg] + '88' }}
               >
-                <div className="flex items-center gap-3 mb-3">
-                  <div className="w-6 h-6 rounded-lg" style={{ background: FOOD_GROUP_COLORS[fg] }} />
-                  <h3 className="text-2xl font-black uppercase" style={{ color: FOOD_GROUP_COLORS[fg] }}>
+                <div className="flex items-center gap-2 sm:gap-3 mb-3">
+                  <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-lg" style={{ background: FOOD_GROUP_COLORS[fg] }} />
+                  <h3 className="text-lg sm:text-2xl font-black uppercase" style={{ color: FOOD_GROUP_COLORS[fg] }}>
                     {FOOD_GROUP_LABELS[fg]}
                   </h3>
-                  <span className="ml-auto text-sm font-bold px-3 py-1 rounded-full" style={{ background: '#00E639', color: '#000' }}>
+                  <span className="ml-auto text-xs sm:text-sm font-bold px-2 sm:px-3 py-1 rounded-full" style={{ background: '#00E639', color: '#000' }}>
                     {info.power}
                   </span>
                 </div>
-                <p className="text-base mb-4" style={{ color: '#C0C0E0' }}>{info.why}</p>
+                <p className="text-sm sm:text-base mb-3 sm:mb-4" style={{ color: '#C0C0E0' }}>{info.why}</p>
                 {/* Food items with pictures */}
-                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-3">
                   {items.map((item) => (
                     <div
                       key={item.id}
                       className="rounded-xl p-3 border flex items-center gap-3"
                       style={{ background: '#1A1A2E', borderColor: item.color + '44' }}
                     >
-                      <span className="text-3xl flex-shrink-0">{pic(item.name)}</span>
+                      <span className="text-2xl sm:text-3xl flex-shrink-0">{pic(item.name)}</span>
                       <div>
-                        <div className="text-base font-bold" style={{ color: '#FFFFFF' }}>{item.name}</div>
-                        <div className="text-sm" style={{ color: '#A0A0C0' }}>+{item.points} points</div>
+                        <div className="text-sm sm:text-base font-bold" style={{ color: '#FFFFFF' }}>{item.name}</div>
+                        <div className="text-xs sm:text-sm" style={{ color: '#A0A0C0' }}>+{item.points} points</div>
                       </div>
                     </div>
                   ))}
@@ -260,22 +261,23 @@ export function LearnPage() {
         </div>
 
         {/* ─── The Junk Food ─── */}
-        <div className="flex items-start gap-4 mb-4">
-          <HeroAvatar size={60} />
+        <div className="flex items-start gap-3 sm:gap-4 mb-4">
+          <div className="hidden sm:block"><HeroAvatar size={60} /></div>
+          <div className="block sm:hidden"><HeroAvatar size={40} /></div>
           <SpeechBubble color="#2B1A1A">
-            <h2 className="text-2xl font-black uppercase mb-1" style={{ color: '#FF4444' }}>
+            <h2 className="text-lg sm:text-2xl font-black uppercase mb-1" style={{ color: '#FF4444' }}>
               Watch Out - Junk Food!
             </h2>
-            <p className="text-lg" style={{ color: '#C0C0E0' }}>
+            <p className="text-sm sm:text-lg" style={{ color: '#C0C0E0' }}>
               Junk food is tricky! It tastes really nice, but it takes away your power.
               And some junk food is WAY worse than others. Let me show you!
             </p>
           </SpeechBubble>
         </div>
 
-        <div className="flex items-start gap-4 mb-4 ml-6">
+        <div className="flex items-start gap-3 sm:gap-4 mb-4 ml-2 sm:ml-6">
           <SpeechBubble color="#2A2A3E">
-            <p className="text-lg" style={{ color: '#C0C0E0' }}>
+            <p className="text-sm sm:text-lg" style={{ color: '#C0C0E0' }}>
               <span className="font-black" style={{ color: '#FFD000' }}>Why does junk food taste so good?</span>
               <br />
               Companies add LOTS of sugar, salt, and fat to make you want more and more.
@@ -285,7 +287,7 @@ export function LearnPage() {
           </SpeechBubble>
         </div>
 
-        <div className="space-y-5 mb-8 ml-2">
+        <div className="space-y-4 sm:space-y-5 mb-6 sm:mb-8 ml-0 sm:ml-2">
           {(['Candy & Sweets', 'Processed Snacks', 'Sugary Drinks', 'Fried Foods', 'Excessive Sugar'] as const).map((category) => {
             const items = JUNK_ITEMS.filter((j) => j.category === category);
             const info = CATEGORY_INFO[category];
@@ -293,34 +295,34 @@ export function LearnPage() {
             return (
               <div
                 key={category}
-                className="rounded-2xl p-5 border-2"
+                className="rounded-2xl p-3 sm:p-5 border-2"
                 style={{ background: '#2A2A3E', borderColor: info.color + '66' }}
               >
-                <div className="flex items-center gap-3 mb-3">
-                  <h3 className="text-2xl font-black uppercase" style={{ color: '#FFFFFF' }}>
+                <div className="flex items-center gap-2 sm:gap-3 mb-3">
+                  <h3 className="text-lg sm:text-2xl font-black uppercase" style={{ color: '#FFFFFF' }}>
                     {category}
                   </h3>
                   <span
-                    className="ml-auto text-sm font-bold px-3 py-1 rounded-full"
+                    className="ml-auto text-xs sm:text-sm font-bold px-2 sm:px-3 py-1 rounded-full"
                     style={{ background: info.color, color: '#000' }}
                   >
                     {info.danger}
                   </span>
                 </div>
-                <p className="text-base mb-3" style={{ color: '#C0C0E0' }}>{info.why}</p>
+                <p className="text-sm sm:text-base mb-3" style={{ color: '#C0C0E0' }}>{info.why}</p>
 
                 {/* Junk items with pictures */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3 mb-3">
                   {items.map((item) => (
                     <div
                       key={item.id}
                       className="rounded-xl p-3 border flex items-center gap-3"
                       style={{ background: '#1A1A2E', borderColor: info.color + '33' }}
                     >
-                      <span className="text-3xl flex-shrink-0">{pic(item.name)}</span>
+                      <span className="text-2xl sm:text-3xl flex-shrink-0">{pic(item.name)}</span>
                       <div className="flex-1">
-                        <div className="text-base font-bold" style={{ color: '#FFFFFF' }}>{item.name}</div>
-                        <div className="text-sm font-bold" style={{ color: '#FF4444' }}>
+                        <div className="text-sm sm:text-base font-bold" style={{ color: '#FFFFFF' }}>{item.name}</div>
+                        <div className="text-xs sm:text-sm font-bold" style={{ color: '#FF4444' }}>
                           Costs you {item.penalty} points and {Math.round(item.penalty * 1.5)} health!
                         </div>
                         <div className="text-sm" style={{ color: '#A0A0C0' }}>
@@ -342,39 +344,40 @@ export function LearnPage() {
         </div>
 
         {/* ─── The Cost Explained Simply ─── */}
-        <div className="flex items-start gap-4 mb-4">
-          <HeroAvatar size={60} />
+        <div className="flex items-start gap-3 sm:gap-4 mb-4">
+          <div className="hidden sm:block"><HeroAvatar size={60} /></div>
+          <div className="block sm:hidden"><HeroAvatar size={40} /></div>
           <SpeechBubble>
-            <h2 className="text-2xl font-black uppercase mb-1" style={{ color: '#FFD000' }}>
+            <h2 className="text-lg sm:text-2xl font-black uppercase mb-1" style={{ color: '#FFD000' }}>
               How Bad Is It Really?
             </h2>
-            <p className="text-lg" style={{ color: '#C0C0E0' }}>
+            <p className="text-sm sm:text-lg" style={{ color: '#C0C0E0' }}>
               Look at this! If you eat one piece of junk food, you need to eat a LOT
               of healthy food just to get your power back!
             </p>
           </SpeechBubble>
         </div>
 
-        <div className="rounded-2xl p-5 border-2 mb-8 ml-2" style={{ background: '#2A2A3E', borderColor: '#3D3D5C' }}>
-          <div className="space-y-3">
+        <div className="rounded-2xl p-3 sm:p-5 border-2 mb-6 sm:mb-8 ml-0 sm:ml-2" style={{ background: '#2A2A3E', borderColor: '#3D3D5C' }}>
+          <div className="space-y-2 sm:space-y-3">
             {[...JUNK_ITEMS].sort((a, b) => b.penalty - a.penalty).map((item) => {
               const recovery = Math.ceil(item.penalty * 1.5 / 5);
               return (
                 <div
                   key={item.id}
-                  className="rounded-xl p-4 border flex items-center gap-4"
+                  className="rounded-xl p-3 sm:p-4 border flex items-center gap-3 sm:gap-4"
                   style={{ background: '#1A1A2E', borderColor: '#3D3D5C' }}
                 >
-                  <span className="text-4xl flex-shrink-0">{pic(item.name)}</span>
+                  <span className="text-3xl sm:text-4xl flex-shrink-0">{pic(item.name)}</span>
                   <div className="flex-1">
-                    <div className="text-lg font-black" style={{ color: '#FFFFFF' }}>{item.name}</div>
-                    <div className="text-base" style={{ color: '#FF4444' }}>
+                    <div className="text-base sm:text-lg font-black" style={{ color: '#FFFFFF' }}>{item.name}</div>
+                    <div className="text-sm sm:text-base" style={{ color: '#FF4444' }}>
                       Takes away {Math.round(item.penalty * 1.5)} health
                     </div>
                   </div>
                   <div className="text-right flex-shrink-0">
-                    <div className="text-2xl font-black" style={{ color: '#00A2FF' }}>{recovery}</div>
-                    <div className="text-sm" style={{ color: '#A0A0C0' }}>healthy foods<br/>to recover</div>
+                    <div className="text-xl sm:text-2xl font-black" style={{ color: '#00A2FF' }}>{recovery}</div>
+                    <div className="text-xs sm:text-sm" style={{ color: '#A0A0C0' }}>healthy foods<br/>to recover</div>
                   </div>
                 </div>
               );
@@ -383,20 +386,21 @@ export function LearnPage() {
         </div>
 
         {/* ─── Tips ─── */}
-        <div className="flex items-start gap-4 mb-4">
-          <HeroAvatar size={60} />
+        <div className="flex items-start gap-3 sm:gap-4 mb-4">
+          <div className="hidden sm:block"><HeroAvatar size={60} /></div>
+          <div className="block sm:hidden"><HeroAvatar size={40} /></div>
           <SpeechBubble>
-            <h2 className="text-2xl font-black uppercase mb-1" style={{ color: '#00E639' }}>
+            <h2 className="text-lg sm:text-2xl font-black uppercase mb-1" style={{ color: '#00E639' }}>
               My Top Tips!
             </h2>
-            <p className="text-lg" style={{ color: '#C0C0E0' }}>
+            <p className="text-sm sm:text-lg" style={{ color: '#C0C0E0' }}>
               Follow these tips and you will be a Health Hero in the game AND in real life!
             </p>
           </SpeechBubble>
         </div>
 
-        <div className="rounded-2xl p-5 border-2 mb-8 ml-2" style={{ background: '#2A2A3E', borderColor: '#00E63966' }}>
-          <div className="space-y-4">
+        <div className="rounded-2xl p-3 sm:p-5 border-2 mb-6 sm:mb-8 ml-0 sm:ml-2" style={{ background: '#2A2A3E', borderColor: '#00E63966' }}>
+          <div className="space-y-3 sm:space-y-4">
             {[
               { num: 1, text: 'Drink lots of water! It gives you the most health back in the game AND in real life.' },
               { num: 2, text: 'Eat your veggies! They are super powerful and help you stay strong.' },
@@ -408,31 +412,32 @@ export function LearnPage() {
             ].map((tip) => (
               <div key={tip.num} className="flex items-start gap-3">
                 <div
-                  className="w-9 h-9 rounded-full flex items-center justify-center text-lg font-black flex-shrink-0"
+                  className="w-7 h-7 sm:w-9 sm:h-9 rounded-full flex items-center justify-center text-sm sm:text-lg font-black flex-shrink-0"
                   style={{ background: '#00E639', color: '#000' }}
                 >
                   {tip.num}
                 </div>
-                <p className="text-lg pt-1" style={{ color: '#C0C0E0' }}>{tip.text}</p>
+                <p className="text-sm sm:text-lg pt-1" style={{ color: '#C0C0E0' }}>{tip.text}</p>
               </div>
             ))}
           </div>
         </div>
 
         {/* ─── Bottom CTA ─── */}
-        <div className="flex items-start gap-4 mb-6">
-          <HeroAvatar size={60} />
+        <div className="flex items-start gap-3 sm:gap-4 mb-6">
+          <div className="hidden sm:block"><HeroAvatar size={60} /></div>
+          <div className="block sm:hidden"><HeroAvatar size={40} /></div>
           <SpeechBubble>
-            <p className="text-lg font-bold" style={{ color: '#FFD000' }}>
+            <p className="text-sm sm:text-lg font-bold" style={{ color: '#FFD000' }}>
               Now you know everything! Ready to put it to the test? Let's go!
             </p>
           </SpeechBubble>
         </div>
 
-        <div className="flex gap-3 pb-8 ml-2">
+        <div className="flex gap-3 pb-8 ml-0 sm:ml-2">
           <button
             onClick={startGame}
-            className="flex-1 text-white rounded-xl py-5 font-bold text-xl flex items-center justify-center gap-3 transition-all shadow-lg uppercase tracking-wide"
+            className="flex-1 text-white rounded-xl py-3 sm:py-5 font-bold text-base sm:text-xl flex items-center justify-center gap-2 sm:gap-3 transition-all shadow-lg uppercase tracking-wide"
             style={{ background: 'linear-gradient(180deg, #00E639 0%, #00B82E 100%)', boxShadow: '0 6px 20px rgba(0,230,57,0.35)' }}
             onMouseEnter={(e) => e.currentTarget.style.background = 'linear-gradient(180deg, #00FF41 0%, #00CC33 100%)'}
             onMouseLeave={(e) => e.currentTarget.style.background = 'linear-gradient(180deg, #00E639 0%, #00B82E 100%)'}
@@ -442,7 +447,7 @@ export function LearnPage() {
           </button>
           <button
             onClick={goToStart}
-            className="rounded-xl px-6 py-5 font-bold text-xl flex items-center justify-center gap-2 transition-all uppercase tracking-wide border-2"
+            className="rounded-xl px-4 sm:px-6 py-3 sm:py-5 font-bold text-base sm:text-xl flex items-center justify-center gap-2 transition-all uppercase tracking-wide border-2"
             style={{ background: 'transparent', color: '#A0A0C0', borderColor: '#3D3D5C' }}
             onMouseEnter={(e) => { e.currentTarget.style.background = '#2A2A3E'; e.currentTarget.style.color = '#FFFFFF'; }}
             onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = '#A0A0C0'; }}
