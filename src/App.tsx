@@ -203,6 +203,7 @@ export default function App() {
 
   const startGame = useGameStore((state) => state.startGame);
   const goToLearn = useGameStore((state) => state.goToLearn);
+  const paused = useGameStore((state) => state.paused);
 
   useEffect(() => {
     const handleGlobalKeyDown = (e: KeyboardEvent) => {
@@ -260,7 +261,7 @@ export default function App() {
       stopMusic();
     }
     return () => stopMusic();
-  }, [status, useGameStore((state) => state.paused)]);
+  }, [status, paused]);
 
   return (
     <div className="relative w-full h-screen bg-[#1B2838] overflow-hidden" style={{ fontFamily: "'Fredoka One', 'Nunito', sans-serif" }}>
@@ -277,7 +278,7 @@ export default function App() {
       {status === 'playing' && (
         <>
           <PauseMenu />
-          {!useGameStore((state) => state.paused) && (
+          {!paused && (
             <>
               <div className="absolute top-0 left-0 w-full p-2 sm:p-4 flex justify-between items-start pointer-events-none">
                 <div className="flex items-start gap-1.5 sm:gap-2">
