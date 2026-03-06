@@ -1,9 +1,9 @@
 import { Game } from './Game';
 import { useGameStore, FoodGroup } from './store';
 import { FOOD_GROUP_LABELS, FOOD_GROUP_COLORS } from './foodData';
-import { Heart, Play, RotateCcw, Footprints, BookOpen, ArrowLeft, ArrowRight, ArrowUp, ArrowDown } from 'lucide-react';
+import { Heart, Play, RotateCcw, Footprints, BookOpen } from 'lucide-react';
 import { LearnPage } from './LearnPage';
-import { useCallback } from 'react';
+import { useCallback, useRef, useEffect } from 'react';
 
 const FOOD_GROUPS: FoodGroup[] = ['fruits', 'vegetables', 'proteins', 'grains', 'dairy', 'hydration'];
 
@@ -30,6 +30,41 @@ export default function App() {
   const fireKey = useCallback((key: string) => {
     window.dispatchEvent(new KeyboardEvent('keydown', { key }));
   }, []);
+
+  // Swipe gesture detection
+  const touchStart = useRef<{ x: number; y: number; time: number } | null>(null);
+  useEffect(() => {
+    const SWIPE_THRESHOLD = 30;
+    const handleTouchStart = (e: TouchEvent) => {
+      const t = e.touches[0];
+      touchStart.current = { x: t.clientX, y: t.clientY, time: Date.now() };
+    };
+    const handleTouchEnd = (e: TouchEvent) => {
+      if (!touchStart.current) return;
+      const t = e.changedTouches[0];
+      const dx = t.clientX - touchStart.current.x;
+      const dy = t.clientY - touchStart.current.y;
+      const elapsed = Date.now() - touchStart.current.time;
+      touchStart.current = null;
+      if (elapsed > 500) return; // too slow — not a swipe
+      const absDx = Math.abs(dx);
+      const absDy = Math.abs(dy);
+      if (absDx < SWIPE_THRESHOLD && absDy < SWIPE_THRESHOLD) return; // tap, not swipe
+      if (absDx > absDy) {
+        // horizontal swipe
+        fireKey(dx > 0 ? 'd' : 'a');
+      } else {
+        // vertical swipe
+        fireKey(dy > 0 ? 's' : 'w');
+      }
+    };
+    window.addEventListener('touchstart', handleTouchStart, { passive: true });
+    window.addEventListener('touchend', handleTouchEnd, { passive: true });
+    return () => {
+      window.removeEventListener('touchstart', handleTouchStart);
+      window.removeEventListener('touchend', handleTouchEnd);
+    };
+  }, [fireKey]);
 
   // Total healthy items collected
   const totalHealthy = Object.values(foodGroupCounts).reduce((a, b) => a + b, 0);
@@ -108,45 +143,6 @@ export default function App() {
               </div>
             </div>
           )}
-          {/* Mobile Touch Controls */}
-          <div className="absolute bottom-4 left-0 right-0 flex justify-between items-end px-4 sm:hidden pointer-events-none">
-            {/* Left side: movement */}
-            <div className="flex flex-col items-center gap-2 pointer-events-auto">
-              <button
-                onTouchStart={() => fireKey('w')}
-                className="w-14 h-14 rounded-full flex items-center justify-center active:scale-90 transition-transform"
-                style={{ background: 'rgba(0,230,57,0.5)', border: '2px solid rgba(0,230,57,0.7)' }}
-              >
-                <ArrowUp className="w-7 h-7 text-white" />
-              </button>
-              <div className="flex gap-2">
-                <button
-                  onTouchStart={() => fireKey('a')}
-                  className="w-14 h-14 rounded-full flex items-center justify-center active:scale-90 transition-transform"
-                  style={{ background: 'rgba(255,255,255,0.25)', border: '2px solid rgba(255,255,255,0.4)' }}
-                >
-                  <ArrowLeft className="w-7 h-7 text-white" />
-                </button>
-                <button
-                  onTouchStart={() => fireKey('d')}
-                  className="w-14 h-14 rounded-full flex items-center justify-center active:scale-90 transition-transform"
-                  style={{ background: 'rgba(255,255,255,0.25)', border: '2px solid rgba(255,255,255,0.4)' }}
-                >
-                  <ArrowRight className="w-7 h-7 text-white" />
-                </button>
-              </div>
-            </div>
-            {/* Right side: slide/roll */}
-            <div className="pointer-events-auto">
-              <button
-                onTouchStart={() => fireKey('s')}
-                className="w-14 h-14 rounded-full flex items-center justify-center active:scale-90 transition-transform"
-                style={{ background: 'rgba(255,165,0,0.5)', border: '2px solid rgba(255,165,0,0.7)' }}
-              >
-                <ArrowDown className="w-7 h-7 text-white" />
-              </button>
-            </div>
-          </div>
         </>
       )}
 
@@ -159,18 +155,31 @@ export default function App() {
             <p className="mb-4 sm:mb-6 font-medium text-xs sm:text-sm" style={{ color: '#A0A0C0' }}>Collect healthy food, dodge junk food, and learn about nutrition!</p>
 
             <div className="space-y-2 sm:space-y-3 mb-4 sm:mb-6 text-left rounded-lg p-3 sm:p-4 border" style={{ background: '#1A1A2E', borderColor: '#3D3D5C' }}>
-              <p className="text-xs font-bold sm:hidden" style={{ color: '#A0A0C0' }}>Use on-screen buttons or:</p>
-              <div className="flex items-center gap-3" style={{ color: '#00E639' }}>
+              <p className="text-xs font-bold sm:hidden" style={{ color: '#A0A0C0' }}>Swipe to play on mobile!</p>
+              <div className="hidden sm:flex items-center gap-3" style={{ color: '#00E639' }}>
                 <kbd className="border rounded px-2 py-1 font-mono text-xs sm:text-sm shadow-sm" style={{ background: '#2A2A3E', borderColor: '#3D3D5C', color: '#FFFFFF' }}>A / D</kbd>
                 <span className="text-xs sm:text-sm font-medium">Move Left / Right</span>
               </div>
-              <div className="flex items-center gap-3" style={{ color: '#00E639' }}>
+              <div className="hidden sm:flex items-center gap-3" style={{ color: '#00E639' }}>
                 <kbd className="border rounded px-2 py-1 font-mono text-xs sm:text-sm shadow-sm" style={{ background: '#2A2A3E', borderColor: '#3D3D5C', color: '#FFFFFF' }}>W</kbd>
                 <span className="text-xs sm:text-sm font-medium">Jump</span>
               </div>
-              <div className="flex items-center gap-3" style={{ color: '#00E639' }}>
+              <div className="hidden sm:flex items-center gap-3" style={{ color: '#00E639' }}>
                 <kbd className="border rounded px-2 py-1 font-mono text-xs sm:text-sm shadow-sm" style={{ background: '#2A2A3E', borderColor: '#3D3D5C', color: '#FFFFFF' }}>S</kbd>
                 <span className="text-xs sm:text-sm font-medium">Roll / Slide</span>
+              </div>
+              {/* Mobile swipe instructions */}
+              <div className="flex sm:hidden items-center gap-3" style={{ color: '#00E639' }}>
+                <span className="text-lg">👈👉</span>
+                <span className="text-xs font-medium">Swipe Left / Right to move</span>
+              </div>
+              <div className="flex sm:hidden items-center gap-3" style={{ color: '#00E639' }}>
+                <span className="text-lg">👆</span>
+                <span className="text-xs font-medium">Swipe Up to jump</span>
+              </div>
+              <div className="flex sm:hidden items-center gap-3" style={{ color: '#00E639' }}>
+                <span className="text-lg">👇</span>
+                <span className="text-xs font-medium">Swipe Down to roll / slide</span>
               </div>
             </div>
 
