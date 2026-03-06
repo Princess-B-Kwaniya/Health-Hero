@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { playCollect, playJunkHit, playCombo, playGameOver } from './sounds';
 
 export type GameStatus = 'start' | 'playing' | 'gameover' | 'learn';
 
@@ -120,10 +121,13 @@ export const useGameStore = create<GameState>((set, get) => ({
     effectExpiry: 0,
   }),
 
-  endGame: () => set((state) => ({
-    status: 'gameover',
-    longestCleanRun: Math.max(state.longestCleanRun, state.cleanRunDistance),
-  })),
+  endGame: () => set((state) => {
+    playGameOver();
+    return {
+      status: 'gameover' as const,
+      longestCleanRun: Math.max(state.longestCleanRun, state.cleanRunDistance),
+    };
+  }),
 
   addHeroPoints: (points) => set((state) => {
     const mult = state.comboMultiplierActive ? 2 : 1;
@@ -131,6 +135,7 @@ export const useGameStore = create<GameState>((set, get) => ({
   }),
 
   collectHealthyItem: (foodGroup, points, fact) => set((state) => {
+    playCollect();
     const mult = state.comboMultiplierActive ? 2 : 1;
     const newCounts = { ...state.foodGroupCounts };
     newCounts[foodGroup] += 1;
@@ -153,6 +158,7 @@ export const useGameStore = create<GameState>((set, get) => ({
       comboMultiplierEnd = Date.now() + 10000;
       comboMessage = COMBO_NAMES[foodGroup];
       comboCount = 0;
+      playCombo();
     }
 
     let healthBoost = 0;
@@ -172,6 +178,7 @@ export const useGameStore = create<GameState>((set, get) => ({
   }),
 
   hitJunkFood: (penalty, effect, duration, fact) => set((state) => {
+    playJunkHit();
     const newJunkContacts = state.junkContacts + 1;
     const newRecentJunk = state.recentJunkHits + 1;
     const healthLoss = Math.abs(penalty) * 1.5;
