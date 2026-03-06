@@ -71,11 +71,14 @@ export default function App() {
 
   return (
     <div className="relative w-full bg-[#1B2838] overflow-hidden" style={{ fontFamily: "'Fredoka One', 'Nunito', sans-serif", height: '100dvh' }}>
-      <Game />
+      {/* Game container — blur filter applied here so it covers canvas + drei Html emojis */}
+      <div style={status === 'playing' && activeEffect === 'blur' ? { filter: 'blur(6px)', transition: 'filter 0.2s ease-in' } : { filter: 'none', transition: 'filter 0.3s ease-out' }} className="w-full h-full">
+        <Game />
+      </div>
 
-      {/* Visual effect overlays from junk food */}
+      {/* Red vignette overlay during blur (sits above, not affected by filter) */}
       {status === 'playing' && activeEffect === 'blur' && (
-        <div className="absolute inset-0 pointer-events-none" style={{ backdropFilter: 'blur(3px)', border: '8px solid rgba(239, 83, 80, 0.3)', borderRadius: '0' }} />
+        <div className="absolute inset-0 pointer-events-none" style={{ background: 'radial-gradient(circle, transparent 20%, rgba(239,83,80,0.25) 100%)', animation: 'dizzy 0.4s ease-in-out' }} />
       )}
       {status === 'playing' && activeEffect === 'tilt' && (
         <div className="absolute inset-0 pointer-events-none" style={{ transform: 'rotate(1.5deg)', border: '6px solid rgba(255, 152, 0, 0.3)' }} />

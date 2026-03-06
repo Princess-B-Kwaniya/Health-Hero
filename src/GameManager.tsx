@@ -14,9 +14,9 @@ export function GameManager() {
       addHeroPoints(delta * 5);
       addDistance(delta * 10);
 
-      // Aggressive speed ramp — noticeable acceleration, capped at 3x base speed
+      // Gradual speed ramp — starts gentle, capped at 3x base speed
       useGameStore.setState((prev) => ({
-        speed: Math.min(90, prev.speed + delta * 0.5),
+        speed: Math.min(60, prev.speed + delta * 0.3),
       }));
 
       // Slow health drain to encourage collecting healthy food

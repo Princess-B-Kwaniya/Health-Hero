@@ -32,3 +32,10 @@ button {
   -webkit-user-select: none;
   user-select: none;
 }
+
+/* Dizzy blur effect when hitting junk food */
+@keyframes dizzy {
+  0%   { backdrop-filter: blur(0px); opacity: 0; }
+  20%  { backdrop-filter: blur(8px); opacity: 1; }
+  100% { backdrop-filter: blur(4px); opacity: 0.7; }
+}

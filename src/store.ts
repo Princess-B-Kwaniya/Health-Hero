@@ -102,7 +102,7 @@ export const useGameStore = create<GameState>((set, get) => ({
     heroPoints: 0,
     healthMeter: 100,
     distance: 0,
-    speed: 30,
+    speed: 18,
     playerLane: 0,
     foodGroupCounts: { ...INITIAL_FOOD_COUNTS },
     junkContacts: 0,

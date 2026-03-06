@@ -71,29 +71,29 @@ export interface JunkItemDef {
 
 export const JUNK_ITEMS: JunkItemDef[] = [
   // Sugary Drinks
-  { id: 'JF-001', name: 'Cola Can', category: 'Sugary Drinks', penalty: 10, effect: 'blur', effectDuration: 4000, color: '#B71C1C', shape: 'cylinder', fact: 'Soda has up to 10 teaspoons of sugar - that is more than your whole day!' },
-  { id: 'JF-002', name: 'Energy Drink', category: 'Sugary Drinks', penalty: 12, effect: 'blur', effectDuration: 4000, color: '#1B5E20', shape: 'cylinder', fact: 'Energy drinks have too much caffeine and sugar - water is better!' },
-  { id: 'JF-003', name: 'Milkshake', category: 'Sugary Drinks', penalty: 10, effect: 'blur', effectDuration: 4000, color: '#F48FB1', shape: 'cylinder', fact: 'Milkshakes can have as much sugar as 5 chocolate bars!' },
+  { id: 'JF-001', name: 'Cola Can', category: 'Sugary Drinks', penalty: 10, effect: 'blur', effectDuration: 1500, color: '#B71C1C', shape: 'cylinder', fact: 'Soda has up to 10 teaspoons of sugar - that is more than your whole day!' },
+  { id: 'JF-002', name: 'Energy Drink', category: 'Sugary Drinks', penalty: 12, effect: 'blur', effectDuration: 1500, color: '#1B5E20', shape: 'cylinder', fact: 'Energy drinks have too much caffeine and sugar - water is better!' },
+  { id: 'JF-003', name: 'Milkshake', category: 'Sugary Drinks', penalty: 10, effect: 'blur', effectDuration: 1500, color: '#F48FB1', shape: 'cylinder', fact: 'Milkshakes can have as much sugar as 5 chocolate bars!' },
 
   // Candy & Sweets
-  { id: 'JF-004', name: 'Lollipop', category: 'Candy & Sweets', penalty: 8, effect: 'tilt', effectDuration: 5000, color: '#E91E63', shape: 'sphere', fact: 'Lollipops are pure sugar and can cause cavities in your teeth!' },
-  { id: 'JF-005', name: 'Gummy Bears', category: 'Candy & Sweets', penalty: 8, effect: 'tilt', effectDuration: 5000, color: '#FF5722', shape: 'sphere', fact: 'Gummy bears are mostly sugar with artificial colours - not real fruit!' },
-  { id: 'JF-006', name: 'Chocolate Bar', category: 'Candy & Sweets', penalty: 9, effect: 'tilt', effectDuration: 5000, color: '#4E342E', shape: 'box', fact: 'Chocolate bars have lots of added sugar - a banana is sweeter and healthier!' },
-  { id: 'JF-007', name: 'Cotton Candy', category: 'Candy & Sweets', penalty: 8, effect: 'tilt', effectDuration: 5000, color: '#CE93D8', shape: 'sphere', fact: 'Cotton candy is 100% sugar with zero nutrition!' },
+  { id: 'JF-004', name: 'Lollipop', category: 'Candy & Sweets', penalty: 8, effect: 'blur', effectDuration: 1500, color: '#E91E63', shape: 'sphere', fact: 'Lollipops are pure sugar and can cause cavities in your teeth!' },
+  { id: 'JF-005', name: 'Gummy Bears', category: 'Candy & Sweets', penalty: 8, effect: 'blur', effectDuration: 1500, color: '#FF5722', shape: 'sphere', fact: 'Gummy bears are mostly sugar with artificial colours - not real fruit!' },
+  { id: 'JF-006', name: 'Chocolate Bar', category: 'Candy & Sweets', penalty: 9, effect: 'blur', effectDuration: 1500, color: '#4E342E', shape: 'box', fact: 'Chocolate bars have lots of added sugar - a banana is sweeter and healthier!' },
+  { id: 'JF-007', name: 'Cotton Candy', category: 'Candy & Sweets', penalty: 8, effect: 'blur', effectDuration: 1500, color: '#CE93D8', shape: 'sphere', fact: 'Cotton candy is 100% sugar with zero nutrition!' },
 
   // Fried Foods
-  { id: 'JF-008', name: 'French Fries', category: 'Fried Foods', penalty: 12, effect: 'slow', effectDuration: 6000, color: '#FFB300', shape: 'box', fact: 'French fries are deep fried in oil - baked potato wedges are healthier!' },
-  { id: 'JF-009', name: 'Fried Chicken', category: 'Fried Foods', penalty: 12, effect: 'slow', effectDuration: 6000, color: '#D84315', shape: 'box', fact: 'Fried chicken absorbs lots of oil - grilled chicken is much healthier!' },
-  { id: 'JF-010', name: 'Doughnut', category: 'Fried Foods', penalty: 11, effect: 'slow', effectDuration: 6000, color: '#F48FB1', shape: 'cylinder', fact: 'Doughnuts are fried and covered in sugar - a double unhealthy combo!' },
+  { id: 'JF-008', name: 'French Fries', category: 'Fried Foods', penalty: 12, effect: 'blur', effectDuration: 1500, color: '#FFB300', shape: 'box', fact: 'French fries are deep fried in oil - baked potato wedges are healthier!' },
+  { id: 'JF-009', name: 'Fried Chicken', category: 'Fried Foods', penalty: 12, effect: 'blur', effectDuration: 1500, color: '#D84315', shape: 'box', fact: 'Fried chicken absorbs lots of oil - grilled chicken is much healthier!' },
+  { id: 'JF-010', name: 'Doughnut', category: 'Fried Foods', penalty: 11, effect: 'blur', effectDuration: 1500, color: '#F48FB1', shape: 'cylinder', fact: 'Doughnuts are fried and covered in sugar - a double unhealthy combo!' },
 
   // Processed Snacks
-  { id: 'JF-011', name: 'Potato Chips', category: 'Processed Snacks', penalty: 9, effect: 'tilt', effectDuration: 4000, color: '#FDD835', shape: 'box', fact: 'Chips have lots of salt which can make your heart work too hard!' },
-  { id: 'JF-012', name: 'Cheese Puffs', category: 'Processed Snacks', penalty: 9, effect: 'tilt', effectDuration: 4000, color: '#FF8F00', shape: 'sphere', fact: 'Cheese puffs are mostly air, starch, and artificial flavour - not real cheese!' },
-  { id: 'JF-013', name: 'Instant Noodles', category: 'Processed Snacks', penalty: 9, effect: 'tilt', effectDuration: 4000, color: '#FFE082', shape: 'box', fact: 'Instant noodles are very high in salt - real pasta is much healthier!' },
+  { id: 'JF-011', name: 'Potato Chips', category: 'Processed Snacks', penalty: 9, effect: 'blur', effectDuration: 1500, color: '#FDD835', shape: 'box', fact: 'Chips have lots of salt which can make your heart work too hard!' },
+  { id: 'JF-012', name: 'Cheese Puffs', category: 'Processed Snacks', penalty: 9, effect: 'blur', effectDuration: 1500, color: '#FF8F00', shape: 'sphere', fact: 'Cheese puffs are mostly air, starch, and artificial flavour - not real cheese!' },
+  { id: 'JF-013', name: 'Instant Noodles', category: 'Processed Snacks', penalty: 9, effect: 'blur', effectDuration: 1500, color: '#FFE082', shape: 'box', fact: 'Instant noodles are very high in salt - real pasta is much healthier!' },
 
   // Excessive Sugar
-  { id: 'JF-014', name: 'Cake Slice', category: 'Excessive Sugar', penalty: 15, effect: 'invert', effectDuration: 3000, color: '#EC407A', shape: 'box', fact: 'A slice of cake can have 30 grams of sugar! That is a LOT!' },
-  { id: 'JF-015', name: 'Ice Cream Sundae', category: 'Excessive Sugar', penalty: 15, effect: 'invert', effectDuration: 3000, color: '#F8BBD0', shape: 'sphere', fact: 'Too much sugar can make you feel tired and grumpy after a short energy burst!' },
+  { id: 'JF-014', name: 'Cake Slice', category: 'Excessive Sugar', penalty: 15, effect: 'blur', effectDuration: 2000, color: '#EC407A', shape: 'box', fact: 'A slice of cake can have 30 grams of sugar! That is a LOT!' },
+  { id: 'JF-015', name: 'Ice Cream Sundae', category: 'Excessive Sugar', penalty: 15, effect: 'blur', effectDuration: 2000, color: '#F8BBD0', shape: 'sphere', fact: 'Too much sugar can make you feel tired and grumpy after a short energy burst!' },
 ];
 
 // Food group color map per SRS
