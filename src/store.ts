@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { playCollect, playJunkHit, playCombo, playGameOver } from './sounds';
+import { playCollect, playJunkHit, playCombo, playGameOver, setVolume } from './sounds';
 
 export type GameStatus = 'start' | 'playing' | 'gameover' | 'learn';
 
@@ -44,9 +44,13 @@ interface GameState {
   longestCleanRun: number;
   activeEffect: 'none' | 'blur' | 'slow' | 'tilt' | 'invert';
   effectExpiry: number;
+  paused: boolean;
+  muted: boolean;
   setPlayerState: (lane: number, y: number, height: number) => void;
   startGame: () => void;
   endGame: () => void;
+  togglePause: () => void;
+  toggleMute: () => void;
   addHeroPoints: (points: number) => void;
   collectHealthyItem: (foodGroup: FoodGroup, points: number, fact: NutriFact) => void;
   hitJunkFood: (penalty: number, effect: GameState['activeEffect'], duration: number, fact: NutriFact) => void;
@@ -95,6 +99,8 @@ export const useGameStore = create<GameState>((set, get) => ({
   longestCleanRun: 0,
   activeEffect: 'none',
   effectExpiry: 0,
+  paused: false,
+  muted: false,
 
   setPlayerState: (lane, y, height) => set({ playerLane: lane, playerY: y, playerHeight: height }),
 
@@ -119,6 +125,7 @@ export const useGameStore = create<GameState>((set, get) => ({
     longestCleanRun: 0,
     activeEffect: 'none',
     effectExpiry: 0,
+    paused: false,
   }),
 
   endGame: () => set((state) => {
@@ -231,8 +238,16 @@ export const useGameStore = create<GameState>((set, get) => ({
   goToLearn: () => set({ status: 'learn' }),
   goToStart: () => set({ status: 'start' }),
 
+  togglePause: () => set((state) => ({ paused: !state.paused })),
+  toggleMute: () => set((state) => {
+    const newMuted = !state.muted;
+    setVolume(newMuted ? 0 : 1);
+    return { muted: newMuted };
+  }),
+
   tick: (time) => {
     const state = get();
+    if (state.paused) return;
     if (state.comboMultiplierActive && time > state.comboMultiplierEnd) {
       set({ comboMultiplierActive: false, comboMessage: '' });
     }

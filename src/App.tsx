@@ -1,7 +1,7 @@
 import { Game } from './Game';
 import { useGameStore, FoodGroup } from './store';
 import { FOOD_GROUP_LABELS, FOOD_GROUP_COLORS } from './foodData';
-import { Heart, Play, RotateCcw, Footprints, BookOpen } from 'lucide-react';
+import { Heart, Play, RotateCcw, Footprints, BookOpen, Volume2, VolumeX, Pause } from 'lucide-react';
 import React, { memo, useCallback, useRef, useEffect } from 'react';
 import { LearnPage } from './LearnPage';
 import { startMusic, stopMusic } from './sounds';
@@ -65,6 +65,74 @@ const EffectsOverlay = memo(() => {
   };
 
   return <div className="absolute inset-0 pointer-events-none" style={styles[activeEffect] || {}} />;
+});
+
+const AudioControls = memo(() => {
+  const muted = useGameStore((state) => state.muted);
+  const toggleMute = useGameStore((state) => state.toggleMute);
+
+  return (
+    <button
+      onClick={toggleMute}
+      className="bg-black/60 backdrop-blur-sm rounded-lg p-2 sm:p-2.5 border border-white/10 shadow-lg pointer-events-auto hover:bg-black/80 transition-colors"
+      title={muted ? "Unmute" : "Mute"}
+    >
+      {muted ? (
+        <VolumeX className="w-4 h-4 sm:w-5 sm:h-5 text-red-500" />
+      ) : (
+        <Volume2 className="w-4 h-4 sm:w-5 sm:h-5 text-[#00E639]" />
+      )}
+    </button>
+  );
+});
+
+const PauseButton = memo(() => {
+  const paused = useGameStore((state) => state.paused);
+  const togglePause = useGameStore((state) => state.togglePause);
+
+  return (
+    <button
+      onClick={togglePause}
+      className="bg-black/60 backdrop-blur-sm rounded-lg p-2 sm:p-2.5 border border-white/10 shadow-lg pointer-events-auto hover:bg-black/80 transition-colors"
+      title={paused ? "Resume" : "Pause"}
+    >
+      {paused ? (
+        <Play className="w-4 h-4 sm:w-5 sm:h-5 text-[#00E639] fill-[#00E639]" />
+      ) : (
+        <Pause className="w-4 h-4 sm:w-5 sm:h-5 text-[#00E639] fill-[#00E639]" />
+      )}
+    </button>
+  );
+});
+
+const PauseMenu = memo(() => {
+  const paused = useGameStore((state) => state.paused);
+  const togglePause = useGameStore((state) => state.togglePause);
+  const goToStart = useGameStore((state) => state.goToStart);
+
+  if (!paused) return null;
+
+  return (
+    <div className="absolute inset-0 z-[100] flex items-center justify-center bg-black/95 backdrop-blur-2xl transition-all duration-500">
+      <div className="bg-[#1A1A2E] border border-[#3D3D5C] rounded-2xl p-8 max-w-sm w-full text-center shadow-2xl animate-in zoom-in slide-in-from-bottom-4 duration-300">
+        <h2 className="text-3xl font-black text-[#FFD000] uppercase italic tracking-tighter mb-6">Game Paused</h2>
+        <div className="space-y-3">
+          <button
+            onClick={togglePause}
+            className="w-full bg-[#00E639] hover:bg-[#00FF41] text-white font-black py-4 rounded-xl uppercase tracking-tighter flex items-center justify-center gap-3 transition-all"
+          >
+            <Play className="w-6 h-6 fill-white" /> Continue
+          </button>
+          <button
+            onClick={goToStart}
+            className="w-full bg-white/5 hover:bg-white/10 text-white font-bold py-3 rounded-xl uppercase transition-all"
+          >
+            Quit to Menu
+          </button>
+        </div>
+      </div>
+    </div>
+  );
 });
 
 const SummaryScreen = memo(() => {
@@ -136,6 +204,19 @@ export default function App() {
   const startGame = useGameStore((state) => state.startGame);
   const goToLearn = useGameStore((state) => state.goToLearn);
 
+  useEffect(() => {
+    const handleGlobalKeyDown = (e: KeyboardEvent) => {
+      const s = useGameStore.getState();
+      if (e.key === 'p' || e.key === 'Escape') {
+        if (s.status === 'playing') s.togglePause();
+      } else if (e.key === 'm') {
+        s.toggleMute();
+      }
+    };
+    window.addEventListener('keydown', handleGlobalKeyDown);
+    return () => window.removeEventListener('keydown', handleGlobalKeyDown);
+  }, []);
+
   const fireKey = useCallback((key: string) => {
     window.dispatchEvent(new KeyboardEvent('keydown', { key }));
   }, []);
@@ -172,13 +253,14 @@ export default function App() {
 
   // Background Music Control
   useEffect(() => {
-    if (status === 'playing') {
+    const paused = useGameStore.getState().paused;
+    if (status === 'playing' && !paused) {
       startMusic();
     } else {
       stopMusic();
     }
     return () => stopMusic();
-  }, [status]);
+  }, [status, useGameStore((state) => state.paused)]);
 
   return (
     <div className="relative w-full h-screen bg-[#1B2838] overflow-hidden" style={{ fontFamily: "'Fredoka One', 'Nunito', sans-serif" }}>
@@ -188,30 +270,47 @@ export default function App() {
 
       <EffectsOverlay />
 
+      <div className="absolute top-2 right-2 sm:top-4 sm:right-4 flex flex-col gap-2 z-[110]">
+        {!status.includes('playing') && <AudioControls />}
+      </div>
+
       {status === 'playing' && (
         <>
-          <div className="absolute top-0 left-0 w-full p-2 sm:p-4 flex justify-between items-start pointer-events-none">
-            <div className="flex items-start gap-1.5 sm:gap-2">
-              <HeroPointsDisplay />
-              <DistanceDisplay />
-            </div>
-            <HealthDisplay />
-          </div>
-
-          {activeFact && (
-            <div className="absolute top-12 sm:top-16 right-2 sm:right-4 pointer-events-none z-10">
-              <div className="rounded-lg px-3 py-1.5 shadow-lg border text-xs font-bold" style={{ background: activeFact.isHealthy ? 'rgba(0,230,57,0.9)' : 'rgba(255,60,60,0.9)', borderColor: activeFact.isHealthy ? '#00FF41' : '#FF4444', color: '#FFFFFF' }}>
-                {activeFact.isHealthy ? `+ ${activeFact.item}` : `- ${activeFact.item}`}
+          <PauseMenu />
+          {!useGameStore((state) => state.paused) && (
+            <>
+              <div className="absolute top-0 left-0 w-full p-2 sm:p-4 flex justify-between items-start pointer-events-none">
+                <div className="flex items-start gap-1.5 sm:gap-2">
+                  <div className="flex flex-col gap-2 pointer-events-auto">
+                    <HeroPointsDisplay />
+                    <div className="flex gap-2">
+                      <AudioControls />
+                      <PauseButton />
+                    </div>
+                  </div>
+                  <DistanceDisplay />
+                </div>
+                <div className="flex items-start gap-2">
+                  <HealthDisplay />
+                </div>
               </div>
-            </div>
-          )}
 
-          {comboMultiplierActive && comboMessage && (
-            <div className="absolute top-20 sm:top-24 right-2 sm:right-4 pointer-events-none z-10">
-              <div className="rounded-lg px-3 py-1 shadow-lg text-xs font-black" style={{ background: '#FFD000', color: '#000' }}>
-                {comboMessage} 2x
-              </div>
-            </div>
+              {activeFact && (
+                <div className="absolute top-12 sm:top-16 right-2 sm:right-4 pointer-events-none z-10">
+                  <div className="rounded-lg px-3 py-1.5 shadow-lg border text-xs font-bold" style={{ background: activeFact.isHealthy ? 'rgba(0,230,57,0.9)' : 'rgba(255,60,60,0.9)', borderColor: activeFact.isHealthy ? '#00FF41' : '#FF4444', color: '#FFFFFF' }}>
+                    {activeFact.isHealthy ? `+ ${activeFact.item}` : `- ${activeFact.item}`}
+                  </div>
+                </div>
+              )}
+
+              {comboMultiplierActive && comboMessage && (
+                <div className="absolute top-20 sm:top-24 right-2 sm:right-4 pointer-events-none z-10">
+                  <div className="rounded-lg px-3 py-1 shadow-lg text-xs font-black" style={{ background: '#FFD000', color: '#000' }}>
+                    {comboMessage} 2x
+                  </div>
+                </div>
+              )}
+            </>
           )}
         </>
       )}

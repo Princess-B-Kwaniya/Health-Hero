@@ -129,7 +129,8 @@ export function Ground() {
   const status = useGameStore((state) => state.status);
 
   useFrame((_, delta) => {
-    if (status === 'playing') {
+    const state = useGameStore.getState();
+    if (status === 'playing' && !state.paused) {
       const offset = (speed / 10) * delta;
       laneTex.offset.y -= offset;
       grassTex.offset.y -= offset;

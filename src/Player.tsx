@@ -33,7 +33,8 @@ export function Player() {
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (status !== 'playing') return;
+      const state = useGameStore.getState();
+      if (status !== 'playing' || state.paused) return;
       if (e.key === 'ArrowLeft' || e.key === 'a') {
         setLane((l) => {
           const next = Math.max(l - 1, -1);
@@ -69,7 +70,8 @@ export function Player() {
   }, [status, isJumping, isRolling]);
 
   useFrame((_, delta) => {
-    if (!playerRef.current || status !== 'playing') return;
+    const state = useGameStore.getState();
+    if (!playerRef.current || status !== 'playing' || state.paused) return;
 
     const targetX = lane * LANE_WIDTH;
     playerRef.current.position.x = THREE.MathUtils.lerp(playerRef.current.position.x, targetX, 15 * delta);

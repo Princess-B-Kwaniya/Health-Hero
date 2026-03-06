@@ -78,9 +78,9 @@ function SingleObstacle({ obs, removeSelf }: { obs: ObstacleData, removeSelf: (i
   const soundPlayed = useRef(false);
 
   useFrame((_, delta) => {
-    if (!groupRef.current) return;
-
     const state = useGameStore.getState();
+    if (state.paused || !groupRef.current) return;
+
     const speed = state.speed;
     const playerLane = state.playerLane;
     const playerY = state.playerY;
@@ -186,12 +186,12 @@ export function Obstacles() {
   const lastSpawnZ = useRef(SPAWN_Z);
 
   useFrame(() => {
-    if (status !== 'playing') {
-      if (obstacleList.length > 0) setObstacleList([]);
+    const state = useGameStore.getState();
+    if (state.paused || status !== 'playing') {
+      if (status !== 'playing' && obstacleList.length > 0) setObstacleList([]);
       return;
     }
 
-    const state = useGameStore.getState();
     const speed = state.speed;
 
     // We only use state for adding/removing items

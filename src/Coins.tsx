@@ -38,9 +38,9 @@ function SingleHealthyItem({ item, removeSelf }: { item: any, removeSelf: (id: n
   const collected = useRef(false);
 
   useFrame((_, delta) => {
-    if (!groupRef.current || collected.current) return;
-
     const state = useGameStore.getState();
+    if (state.paused || !groupRef.current || collected.current) return;
+
     const speed = state.speed;
     const playerLane = state.playerLane;
     const playerY = state.playerY;
@@ -86,8 +86,9 @@ export function HealthyItems() {
   const itemId = useRef(0);
 
   useFrame(() => {
-    if (status !== 'playing') {
-      if (itemList.length > 0) setItemList([]);
+    const state = useGameStore.getState();
+    if (state.paused || status !== 'playing') {
+      if (status !== 'playing' && itemList.length > 0) setItemList([]);
       return;
     }
 

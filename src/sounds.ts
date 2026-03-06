@@ -3,12 +3,24 @@
 
 let ctx: AudioContext | null = null;
 let musicInterval: any = null;
+let masterGain: GainNode | null = null;
 const LOOKAHEAD = 0.2; // How far ahead to schedule notes (seconds)
 
 function getCtx(): AudioContext {
-  if (!ctx) ctx = new (window.AudioContext || (window as any).webkitAudioContext)();
+  if (!ctx) {
+    ctx = new (window.AudioContext || (window as any).webkitAudioContext)();
+    masterGain = ctx.createGain();
+    masterGain.connect(ctx.destination);
+  }
   if (ctx.state === 'suspended') ctx.resume();
   return ctx;
+}
+
+export function setVolume(v: number) {
+  const c = getCtx();
+  if (masterGain) {
+    masterGain.gain.setTargetAtTime(v, c.currentTime, 0.05);
+  }
 }
 
 // Custom Reverb/Echo effect for "flesh"
@@ -45,7 +57,7 @@ export function playCollect() {
     g.gain.linearRampToValueAtTime(0.12, t + 0.01);
     g.gain.exponentialRampToValueAtTime(0.001, t + 0.2);
     o1.connect(g); o2.connect(g);
-    g.connect(c.destination);
+    g.connect(masterGain!);
     o1.start(t); o2.start(t);
     o1.stop(t + 0.2); o2.stop(t + 0.2);
   } catch { /* silent fail */ }
@@ -63,7 +75,7 @@ export function playJunkHit() {
     o.frequency.exponentialRampToValueAtTime(30, t + 0.25);
     g.gain.setValueAtTime(0.2, t);
     g.gain.exponentialRampToValueAtTime(0.001, t + 0.4);
-    o.connect(g).connect(c.destination);
+    o.connect(g).connect(masterGain!);
     o.start(t);
     o.stop(t + 0.4);
   } catch { /* silent fail */ }
@@ -82,7 +94,7 @@ export function playCombo() {
       g.gain.setValueAtTime(0, t + i * 0.08);
       g.gain.linearRampToValueAtTime(0.1, t + i * 0.08 + 0.02);
       g.gain.exponentialRampToValueAtTime(0.001, t + i * 0.08 + 0.5);
-      o.connect(g).connect(c.destination);
+      o.connect(g).connect(masterGain!);
       o.start(t + i * 0.08);
       o.stop(t + i * 0.08 + 0.5);
     });
@@ -100,7 +112,7 @@ export function playGameOver() {
     const g = c.createGain();
     g.gain.setValueAtTime(0.05, t);
     g.gain.exponentialRampToValueAtTime(0.001, t + 1.2);
-    o.connect(g).connect(c.destination);
+    o.connect(g).connect(masterGain!);
     o.start(t); o.stop(t + 1.2);
   } catch { /* silent fail */ }
 }
@@ -116,7 +128,7 @@ export function playMove() {
     const g = c.createGain();
     g.gain.setValueAtTime(0.05, t);
     g.gain.exponentialRampToValueAtTime(0.001, t + 0.15);
-    o.connect(g).connect(c.destination);
+    o.connect(g).connect(masterGain!);
     o.start(t); o.stop(t + 0.15);
   } catch { /* silent fail */ }
 }
@@ -132,7 +144,7 @@ export function playJump() {
     const g = c.createGain();
     g.gain.setValueAtTime(0.1, t);
     g.gain.exponentialRampToValueAtTime(0.001, t + 0.25);
-    o.connect(g).connect(c.destination);
+    o.connect(g).connect(masterGain!);
     o.start(t); o.stop(t + 0.25);
   } catch { /* silent fail */ }
 }
@@ -148,7 +160,7 @@ export function playRoll() {
     const g = c.createGain();
     g.gain.setValueAtTime(0.08, t);
     g.gain.exponentialRampToValueAtTime(0.001, t + 0.6);
-    o.connect(g).connect(c.destination);
+    o.connect(g).connect(masterGain!);
     o.start(t); o.stop(t + 0.6);
   } catch { /* silent fail */ }
 }
@@ -162,7 +174,7 @@ function playKick(ctx: AudioContext, time: number) {
   o.frequency.exponentialRampToValueAtTime(0.001, time + 0.15);
   g.gain.setValueAtTime(0.4, time);
   g.gain.exponentialRampToValueAtTime(0.001, time + 0.15);
-  o.connect(g).connect(ctx.destination);
+  o.connect(g).connect(masterGain!);
   o.start(time); o.stop(time + 0.15);
 }
 
@@ -177,7 +189,7 @@ function playSnare(ctx: AudioContext, time: number) {
   const g = ctx.createGain();
   g.gain.setValueAtTime(0.12, time);
   g.gain.exponentialRampToValueAtTime(0.01, time + 0.1);
-  noise.connect(filter).connect(g).connect(ctx.destination);
+  noise.connect(filter).connect(g).connect(masterGain!);
   noise.start(time); noise.stop(time + 0.12);
 }
 
@@ -192,7 +204,7 @@ function playHat(ctx: AudioContext, time: number) {
   const g = ctx.createGain();
   g.gain.setValueAtTime(0.05, time);
   g.gain.exponentialRampToValueAtTime(0.001, time + 0.04);
-  noise.connect(filter).connect(g).connect(ctx.destination);
+  noise.connect(filter).connect(g).connect(masterGain!);
   noise.start(time); noise.stop(time + 0.04);
 }
 
@@ -234,7 +246,7 @@ function scheduleStep(step: number, time: number) {
     g.gain.setValueAtTime(0, time);
     g.gain.linearRampToValueAtTime(0.08, time + 0.02);
     g.gain.exponentialRampToValueAtTime(0.001, time + 0.25);
-    o.connect(g).connect(c.destination);
+    o.connect(g).connect(masterGain!);
     o.start(time); o.stop(time + 0.25);
   }
 
@@ -249,7 +261,7 @@ function scheduleStep(step: number, time: number) {
       g.gain.setValueAtTime(0, time);
       g.gain.linearRampToValueAtTime(0.04, time + 0.01);
       g.gain.exponentialRampToValueAtTime(0.001, time + 0.15);
-      o.connect(g).connect(c.destination);
+      o.connect(g).connect(masterGain!);
       o.start(time); o.stop(time + 0.15);
     }
   }
