@@ -92,18 +92,20 @@ export default function App() {
         <>
           <div className="absolute top-0 left-0 w-full p-2 sm:p-4 flex justify-between items-start pointer-events-none">
             {/* Top-Left: HeroPoints — Roblox dark panel style */}
-            <div className="bg-black/60 backdrop-blur-sm rounded-lg px-2 sm:px-4 py-1.5 sm:py-2 border border-white/10 shadow-lg flex items-center gap-1.5 sm:gap-2">
-              <div className="w-5 h-5 sm:w-7 sm:h-7 rounded flex items-center justify-center text-[10px] sm:text-xs font-black" style={{ background: '#00E639', color: '#000' }}>HP</div>
-              <span className="font-mono text-sm sm:text-xl font-black" style={{ color: '#00E639' }}>{Math.floor(heroPoints)}</span>
-              {comboMultiplierActive && (
-                <span className="text-[10px] sm:text-xs font-bold px-1.5 sm:px-2 py-0.5 rounded animate-bounce" style={{ background: '#FFD000', color: '#000' }}>2x</span>
-              )}
-            </div>
+            <div className="flex items-start gap-1.5 sm:gap-2">
+              <div className="bg-black/60 backdrop-blur-sm rounded-lg px-2 sm:px-4 py-1.5 sm:py-2 border border-white/10 shadow-lg flex items-center gap-1.5 sm:gap-2">
+                <div className="w-5 h-5 sm:w-7 sm:h-7 rounded flex items-center justify-center text-[10px] sm:text-xs font-black" style={{ background: '#00E639', color: '#000' }}>HP</div>
+                <span className="font-mono text-sm sm:text-xl font-black" style={{ color: '#00E639' }}>{Math.floor(heroPoints)}</span>
+                {comboMultiplierActive && (
+                  <span className="text-[10px] sm:text-xs font-bold px-1.5 sm:px-2 py-0.5 rounded animate-bounce" style={{ background: '#FFD000', color: '#000' }}>2x</span>
+                )}
+              </div>
 
-            {/* Top-Center: Distance */}
-            <div className="bg-black/60 backdrop-blur-sm rounded-lg px-2 sm:px-3 py-1 sm:py-1.5 border border-white/10 flex items-center gap-1">
-              <Footprints className="w-3 h-3 sm:w-4 sm:h-4" style={{ color: '#FFD000' }} />
-              <span className="font-mono text-xs sm:text-sm font-bold" style={{ color: '#FFD000' }}>{Math.floor(distance)}m</span>
+              {/* Distance — next to HP */}
+              <div className="bg-black/60 backdrop-blur-sm rounded-lg px-2 sm:px-3 py-1.5 sm:py-2 border border-white/10 flex items-center gap-1">
+                <Footprints className="w-3 h-3 sm:w-4 sm:h-4" style={{ color: '#FFD000' }} />
+                <span className="font-mono text-xs sm:text-sm font-bold" style={{ color: '#FFD000' }}>{Math.floor(distance)}m</span>
+              </div>
             </div>
 
             {/* Top-Right: Health Meter — Roblox green bar */}

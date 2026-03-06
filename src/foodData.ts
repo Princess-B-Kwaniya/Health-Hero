@@ -122,3 +122,63 @@ export function getRandomHealthyItem(): HealthyItemDef {
 export function getRandomJunkItem(): JunkItemDef {
   return JUNK_ITEMS[Math.floor(Math.random() * JUNK_ITEMS.length)];
 }
+
+/* ── Emoji for every food item (used as floating labels in-game) ── */
+export const FOOD_EMOJI: Record<string, string> = {
+  // Healthy – Hydration
+  'Water Bottle':    '\u{1F4A7}',
+  'Coconut Water':   '\u{1F965}',
+  'Herbal Tea':      '\u{1F375}',
+  // Healthy – Fruits
+  'Red Apple':       '\u{1F34E}',
+  'Banana':          '\u{1F34C}',
+  'Orange':          '\u{1F34A}',
+  'Strawberry':      '\u{1F353}',
+  'Watermelon':      '\u{1F349}',
+  'Grapes':          '\u{1F347}',
+  'Mango':           '\u{1F96D}',
+  // Healthy – Vegetables
+  'Carrot':          '\u{1F955}',
+  'Broccoli':        '\u{1F966}',
+  'Spinach':         '\u{1F96C}',
+  'Bell Pepper':     '\u{1FAD1}',
+  'Tomato':          '\u{1F345}',
+  'Peas':            '\u{1FAD8}',
+  'Sweet Potato':    '\u{1F360}',
+  'Cucumber':        '\u{1F952}',
+  // Healthy – Proteins
+  'Grilled Chicken': '\u{1F357}',
+  'Boiled Egg':      '\u{1F95A}',
+  'Fish Fillet':     '\u{1F41F}',
+  'Bean Bowl':       '\u{1FAD8}',
+  'Almonds':         '\u{1F95C}',
+  'Lentil Soup':     '\u{1F372}',
+  // Healthy – Grains
+  'Brown Bread':     '\u{1F35E}',
+  'Oatmeal':         '\u{1F963}',
+  'Brown Rice':      '\u{1F35A}',
+  'Wheat Pasta':     '\u{1F35D}',
+  // Healthy – Dairy
+  'Milk Carton':     '\u{1F95B}',
+  'Yoghurt Cup':     '\u{1F966}',
+  // Junk – Sugary Drinks
+  'Cola Can':        '\u{1F964}',
+  'Energy Drink':    '\u{1F964}',
+  'Milkshake':       '\u{1F964}',
+  // Junk – Candy & Sweets
+  'Lollipop':        '\u{1F36D}',
+  'Gummy Bears':     '\u{1F36C}',
+  'Chocolate Bar':   '\u{1F36B}',
+  'Cotton Candy':    '\u{1F36C}',
+  // Junk – Fried Foods
+  'French Fries':    '\u{1F35F}',
+  'Fried Chicken':   '\u{1F357}',
+  'Doughnut':        '\u{1F369}',
+  // Junk – Processed Snacks
+  'Potato Chips':    '\u{1F35F}',
+  'Cheese Puffs':    '\u{1F9C0}',
+  'Instant Noodles': '\u{1F35C}',
+  // Junk – Excessive Sugar
+  'Cake Slice':      '\u{1F370}',
+  'Ice Cream Sundae':'\u{1F368}',
+};

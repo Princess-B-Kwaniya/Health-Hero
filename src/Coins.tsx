@@ -1,7 +1,8 @@
 import { useRef, useState } from 'react';
 import { useFrame } from '@react-three/fiber';
+import { Html } from '@react-three/drei';
 import { useGameStore } from './store';
-import { HealthyItemDef, getRandomHealthyItem, FOOD_GROUP_COLORS } from './foodData';
+import { HealthyItemDef, getRandomHealthyItem, FOOD_GROUP_COLORS, FOOD_EMOJI } from './foodData';
 import * as THREE from 'three';
 
 const LANE_WIDTH = 2.5;
@@ -647,12 +648,12 @@ export function HealthyItems() {
         const itemDef = getRandomHealthyItem();
 
         // Spawn a line of food items (same food group for combo potential)
-        const count = 3 + Math.floor(Math.random() * 3);
+        const count = 2 + Math.floor(Math.random() * 2);
         for (let i = 0; i < count; i++) {
           newItems.push({
             id: itemId.current++,
             lane,
-            z: SPAWN_Z - i * 2.5,
+            z: SPAWN_Z - i * 4,
             y: isHigh ? 2.5 : 0.7,
             collected: false,
             item: i === 0 ? itemDef : (Math.random() > 0.4 ? itemDef : getRandomHealthyItem()),
@@ -670,8 +671,12 @@ export function HealthyItems() {
         const groupColor = FOOD_GROUP_COLORS[item.item.foodGroup];
         return (
           <group key={item.id} position={[item.lane * LANE_WIDTH, item.y, item.z]}>
-            <HealthyFoodModel item={item.item} />
             <FoodGroupRing color={groupColor} />
+            <Html position={[0, 0.5, 0]} center sprite distanceFactor={12} style={{ pointerEvents: 'none' }}>
+              <div style={{ fontSize: '2.8rem', lineHeight: 1, filter: 'drop-shadow(0 2px 3px rgba(0,0,0,0.3))' }}>
+                {FOOD_EMOJI[item.item.name] || '\u{1F34F}'}
+              </div>
+            </Html>
           </group>
         );
       })}

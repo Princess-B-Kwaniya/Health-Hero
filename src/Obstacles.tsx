@@ -1,7 +1,8 @@
 ﻿import { useRef, useState } from 'react';
 import { useFrame } from '@react-three/fiber';
+import { Html } from '@react-three/drei';
 import { useGameStore } from './store';
-import { JunkItemDef, getRandomJunkItem } from './foodData';
+import { JunkItemDef, getRandomJunkItem, FOOD_EMOJI } from './foodData';
 import * as THREE from 'three';
 
 const LANE_WIDTH = 2.5;
@@ -397,13 +398,12 @@ export function Obstacles() {
         if (obs.type === 'barrier') {
           return (
             <group key={obs.id} position={[obs.lane * LANE_WIDTH, 0, obs.z]}>
-              {/* Ground warning ring */}
               <PulseRing color={warningColor} />
-
-              {/* The creative food model */}
-              <JunkFoodModel junk={obs.junk} />
-
-
+              <Html position={[0, 0.7, 0]} center sprite distanceFactor={12} style={{ pointerEvents: 'none' }}>
+                <div style={{ fontSize: '2.8rem', lineHeight: 1, filter: 'drop-shadow(0 2px 3px rgba(0,0,0,0.3))' }}>
+                  {FOOD_EMOJI[obs.junk.name] || '\u{1F6AB}'}
+                </div>
+              </Html>
             </group>
           );
         } else if (obs.type === 'overhead') {
@@ -418,10 +418,12 @@ export function Obstacles() {
                 </group>
               ))}
 
-              {/* Hanging food model (scaled up slightly, raised) */}
-              <group position={[0, 1.0, 0]} scale={[1.3, 1.3, 1.3]}>
-                <JunkFoodModel junk={obs.junk} />
-              </group>
+              {/* Emoji in place of hanging food model */}
+              <Html position={[0, 1.4, 0]} center sprite distanceFactor={12} style={{ pointerEvents: 'none' }}>
+                <div style={{ fontSize: '2.8rem', lineHeight: 1, filter: 'drop-shadow(0 2px 3px rgba(0,0,0,0.3))' }}>
+                  {FOOD_EMOJI[obs.junk.name] || '\u{1F6AB}'}
+                </div>
+              </Html>
 
               {/* Red warning bar along bottom */}
               <mesh position={[0, 0.95, 0]}><boxGeometry args={[2.0, 0.08, 0.9]} /><meshStandardMaterial color={warningColor} emissive={warningColor} emissiveIntensity={0.5} /></mesh>
@@ -452,10 +454,12 @@ export function Obstacles() {
                   <mesh position={[0, 0.3, 0]} rotation={[0, 0, -Math.PI / 4]}><boxGeometry args={[0.08, 0.22, 0.02]} /><meshStandardMaterial color="#FFFFFF" emissive="#FFFFFF" emissiveIntensity={0.6} /></mesh>
                 </group>
               ))}
-              <group position={[0, 0.9, 0]}>
-                <JunkFoodModel junk={obs.junk} />
-              </group>
               <PulseRing color="#FF9800" radius={1.4} />
+              <Html position={[0, 1.2, 0]} center sprite distanceFactor={12} style={{ pointerEvents: 'none' }}>
+                <div style={{ fontSize: '2.8rem', lineHeight: 1, filter: 'drop-shadow(0 2px 3px rgba(0,0,0,0.3))' }}>
+                  {FOOD_EMOJI[obs.junk.name] || '\u{1F6AB}'}
+                </div>
+              </Html>
             </group>
           );
         } else if (obs.type === 'highBeam') {
@@ -482,10 +486,12 @@ export function Obstacles() {
                   <mesh position={[0, -0.22, 0]} rotation={[0, 0, -Math.PI / 4]}><boxGeometry args={[0.08, 0.18, 0.02]} /><meshStandardMaterial color="#00E5FF" emissive="#00E5FF" emissiveIntensity={0.6} /></mesh>
                 </group>
               ))}
-              <group position={[0, 0.2, 0]} scale={[0.8, 0.8, 0.8]}>
-                <JunkFoodModel junk={obs.junk} />
-              </group>
               <PulseRing color="#7B1FA2" radius={1.4} />
+              <Html position={[0, 1.5, 0]} center sprite distanceFactor={12} style={{ pointerEvents: 'none' }}>
+                <div style={{ fontSize: '2.8rem', lineHeight: 1, filter: 'drop-shadow(0 2px 3px rgba(0,0,0,0.3))' }}>
+                  {FOOD_EMOJI[obs.junk.name] || '\u{1F6AB}'}
+                </div>
+              </Html>
             </group>
           );
         } else {
