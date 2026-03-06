@@ -1,6 +1,6 @@
 # Health Hero: The Healthy Runner
 
-An endless runner game that teaches children (ages 5–12) about healthy eating through fun, interactive gameplay. Built with React, Three.js, and TypeScript.
+An endless runner game that teaches children (ages 5+) about healthy eating through fun, interactive gameplay. Built with React, Three.js, and TypeScript.
 
 ## About
 
