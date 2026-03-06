@@ -1,5 +1,14 @@
 @import "tailwindcss";
 
+/* Fill the real visible viewport on mobile (dvh accounts for browser chrome) */
+html, body, #root {
+  height: 100dvh;
+  height: 100vh; /* fallback for older browsers */
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
 /* Prevent double-tap zoom and improve touch responsiveness on mobile */
 html {
   touch-action: manipulation;
@@ -9,6 +18,13 @@ html {
 /* Prevent pull-to-refresh and overscroll bounce during gameplay */
 body {
   overscroll-behavior: none;
+}
+
+/* Use dvh where supported */
+@supports (height: 100dvh) {
+  html, body, #root {
+    height: 100dvh;
+  }
 }
 
 /* Prevent text selection on touch controls */

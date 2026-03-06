@@ -35,7 +35,7 @@ export default function App() {
   const totalHealthy = Object.values(foodGroupCounts).reduce((a, b) => a + b, 0);
 
   return (
-    <div className="relative w-full h-screen bg-[#1B2838] overflow-hidden" style={{ fontFamily: "'Fredoka One', 'Nunito', sans-serif" }}>
+    <div className="relative w-full bg-[#1B2838] overflow-hidden" style={{ fontFamily: "'Fredoka One', 'Nunito', sans-serif", height: '100dvh' }}>
       <Game />
 
       {/* Visual effect overlays from junk food */}
