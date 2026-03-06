@@ -7,6 +7,9 @@ import { Ground } from './Ground';
 import { HealthyItems } from './Coins';
 import { GameManager } from './GameManager';
 import { CityBackground } from './CityBackground';
+import { useGameStore } from './store';
+import { useFrame } from '@react-three/fiber';
+import * as THREE from 'three';
 
 class R3FErrorBoundary extends React.Component<
   { children: React.ReactNode },
@@ -28,6 +31,7 @@ class R3FErrorBoundary extends React.Component<
     return this.props.children;
   }
 }
+
 
 export function Game() {
   return (

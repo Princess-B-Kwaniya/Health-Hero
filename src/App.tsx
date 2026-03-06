@@ -4,6 +4,7 @@ import { FOOD_GROUP_LABELS, FOOD_GROUP_COLORS } from './foodData';
 import { Heart, Play, RotateCcw, Footprints, BookOpen } from 'lucide-react';
 import React, { memo, useCallback, useRef, useEffect } from 'react';
 import { LearnPage } from './LearnPage';
+import { startMusic, stopMusic } from './sounds';
 
 const FOOD_GROUPS: FoodGroup[] = ['fruits', 'vegetables', 'proteins', 'grains', 'dairy', 'hydration'];
 
@@ -80,11 +81,12 @@ const SummaryScreen = memo(() => {
 
   return (
     <div className="absolute inset-0 flex items-center justify-center p-4 bg-black/65 backdrop-blur-md">
-      <div className="rounded-xl p-4 sm:p-6 max-w-md w-full text-center shadow-2xl border bg-[#2A2A3E] border-[#3D3D5C] max-h-[90vh] overflow-y-auto">
+      <div className="rounded-xl p-4 sm:p-6 max-w-md w-full text-center shadow-2xl border bg-[#2A2A3E] border-[#3D3D5C] max-h-[90vh] overflow-y-auto relative overflow-hidden">
         <h2 className="text-2xl sm:text-3xl font-black mb-1 uppercase text-[#FFD000]">Run Summary</h2>
         <p className="mb-3 sm:mb-4 text-xs sm:text-sm text-[#A0A0C0]">
           {healthMeter <= 0 ? 'Your health ran out! Eat more healthy food!' : 'Great run hero!'}
         </p>
+
         <div className="grid grid-cols-3 gap-2 sm:gap-3 mb-3 sm:mb-4">
           <div className="rounded-lg p-2 sm:p-3 border border-[#00E639] bg-[#1A1A2E]">
             <div className="text-[10px] uppercase text-[#00E639]">Points</div>
@@ -117,7 +119,7 @@ const SummaryScreen = memo(() => {
           <span>Junk Food Hits: {junkContacts}</span>
         </div>
 
-        <button onClick={startGame} className="w-full text-white rounded-lg py-3 sm:py-4 font-bold text-base sm:text-lg bg-green-500 shadow-lg uppercase mb-2">Run Again!</button>
+        <button onClick={startGame} className="w-full text-white rounded-lg py-3 sm:py-4 font-bold text-base sm:text-lg bg-green-500 shadow-lg uppercase mb-3 text-white">Run Again!</button>
         <button onClick={goToLearn} className="w-full rounded-lg py-3 font-bold text-sm uppercase border border-[#FFD000] text-[#FFD000]">Learn About Food</button>
       </div>
     </div>
@@ -167,6 +169,16 @@ export default function App() {
       window.removeEventListener('touchend', handleTouchEnd);
     };
   }, [fireKey]);
+
+  // Background Music Control
+  useEffect(() => {
+    if (status === 'playing') {
+      startMusic();
+    } else {
+      stopMusic();
+    }
+    return () => stopMusic();
+  }, [status]);
 
   return (
     <div className="relative w-full h-screen bg-[#1B2838] overflow-hidden" style={{ fontFamily: "'Fredoka One', 'Nunito', sans-serif" }}>
@@ -238,7 +250,7 @@ export default function App() {
               ))}
             </div>
 
-            <button onClick={startGame} className="w-full text-white rounded-lg py-3 sm:py-4 font-bold text-base sm:text-lg bg-green-500 shadow-lg uppercase mb-3">Play Now!</button>
+            <button onClick={startGame} className="w-full text-white rounded-lg py-3 sm:py-4 font-bold text-base sm:text-lg bg-green-500 shadow-lg uppercase mb-3 text-white">Play Now!</button>
             <button onClick={goToLearn} className="w-full rounded-lg py-3 font-bold text-sm uppercase border border-[#FFD000] text-[#FFD000]">How to Play</button>
           </div>
         </div>

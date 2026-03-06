@@ -2,7 +2,7 @@ import { useRef, useState } from 'react';
 import { useFrame } from '@react-three/fiber';
 import { Html } from '@react-three/drei';
 import { useGameStore } from './store';
-import { HealthyItemDef, getRandomHealthyItem, FOOD_GROUP_COLORS, FOOD_EMOJI } from './foodData';
+import { getRandomHealthyItem, FOOD_GROUP_COLORS, FOOD_EMOJI } from './foodData';
 import * as THREE from 'three';
 
 const LANE_WIDTH = 2.5;
@@ -33,74 +33,91 @@ function HealthyFoodModel({ item }: { item: any }) {
   return <SphereFood color={color} item={item} />;
 }
 
-export function HealthyItems() {
-  const [items, setItems] = useState<any[]>([]);
-  const status = useGameStore((state) => state.status);
-  const itemId = useRef(0);
+function SingleHealthyItem({ item, removeSelf }: { item: any, removeSelf: (id: number) => void }) {
+  const groupRef = useRef<THREE.Group>(null);
+  const collected = useRef(false);
 
   useFrame((_, delta) => {
-    if (status !== 'playing') {
-      if (items.length > 0) setItems([]);
-      return;
-    }
+    if (!groupRef.current || collected.current) return;
 
     const state = useGameStore.getState();
     const speed = state.speed;
     const playerLane = state.playerLane;
     const playerY = state.playerY;
 
-    setItems((prev) => {
-      let newItems = prev.map((item) => ({ ...item, z: item.z + speed * delta }));
+    groupRef.current.position.z += speed * delta;
+    const z = groupRef.current.position.z;
 
-      newItems = newItems.map((item) => {
-        if (!item.collected && Math.abs(item.z) < 1.2 && item.lane === playerLane) {
-          if (Math.abs(item.y - playerY) < 1.5) {
-            state.collectHealthyItem(item.item.foodGroup, item.item.points, {
-              item: item.item.name, fact: item.item.fact, isHealthy: true, foodGroup: item.item.foodGroup
-            });
-            return { ...item, collected: true };
-          }
-        }
-        return item;
-      });
-
-      const filtered = newItems.filter((item) => item.z < 10 && !item.collected);
-
-      const minZ = filtered.length > 0 ? Math.min(...filtered.map(o => o.z)) : 0;
-      if (minZ > SPAWN_Z + 20 && Math.random() > 0.4) {
-        const lane = Math.floor(Math.random() * 3) - 1;
-        const itemDef = getRandomHealthyItem();
-        const isHigh = Math.random() > 0.8;
-        for (let i = 0; i < 3; i++) {
-          filtered.push({
-            id: itemId.current++,
-            lane,
-            z: SPAWN_Z - i * 4,
-            y: isHigh ? 2.5 : 0.7,
-            collected: false,
-            item: itemDef,
-          });
-        }
+    // Collision
+    if (Math.abs(z) < 1.2 && item.lane === playerLane) {
+      if (Math.abs(item.y - playerY) < 1.5) {
+        collected.current = true;
+        state.collectHealthyItem(item.item.foodGroup, item.item.points, {
+          item: item.item.name, fact: item.item.fact, isHealthy: true, foodGroup: item.item.foodGroup
+        });
+        removeSelf(item.id);
       }
-      return filtered;
-    });
+    }
+
+    if (z > 10) {
+      removeSelf(item.id);
+    }
   });
 
   return (
+    <group ref={groupRef} position={[item.lane * LANE_WIDTH, item.y, item.z]}>
+      <HealthyFoodModel item={item.item} />
+      <Html position={[0, 0.5, 0]} center sprite distanceFactor={12} style={{ pointerEvents: 'none' }}>
+        <div style={{ fontSize: '2.8rem', lineHeight: 1, filter: 'drop-shadow(0 2px 3px rgba(0,0,0,0.3))' }}>
+          {FOOD_EMOJI[item.item.name] || '\u{1F34F}'}
+        </div>
+      </Html>
+      <mesh rotation={[Math.PI / 2, 0, 0]} position={[0, 0.02, 0]}>
+        <ringGeometry args={[0.4, 0.45, 8]} />
+        <meshBasicMaterial color={FOOD_GROUP_COLORS[item.item.foodGroup]} transparent opacity={0.3} />
+      </mesh>
+    </group>
+  );
+}
+
+export function HealthyItems() {
+  const [itemList, setItemList] = useState<any[]>([]);
+  const status = useGameStore((state) => state.status);
+  const itemId = useRef(0);
+
+  useFrame(() => {
+    if (status !== 'playing') {
+      if (itemList.length > 0) setItemList([]);
+      return;
+    }
+
+    if (Math.random() > 0.95 && itemList.length < 15) {
+      const lane = Math.floor(Math.random() * 3) - 1;
+      const itemDef = getRandomHealthyItem();
+      const isHigh = Math.random() > 0.8;
+
+      const newItems = [];
+      for (let i = 0; i < 3; i++) {
+        newItems.push({
+          id: itemId.current++,
+          lane,
+          z: SPAWN_Z - i * 4,
+          y: isHigh ? 2.5 : 0.7,
+          item: itemDef,
+        });
+      }
+      setItemList(prev => [...prev, ...newItems]);
+    }
+  });
+
+  const removeItem = (id: number) => {
+    setItemList(prev => prev.filter(i => i.id !== id));
+  };
+
+  return (
     <>
-      {items.map((item) => (
-        <group key={item.id} position={[item.lane * LANE_WIDTH, item.y, item.z]}>
-          <HealthyFoodModel item={item.item} />
-          <Html position={[0, 0.5, 0]} center sprite distanceFactor={12} style={{ pointerEvents: 'none' }}>
-            <div style={{ fontSize: '2.8rem', lineHeight: 1, filter: 'drop-shadow(0 2px 3px rgba(0,0,0,0.3))' }}>
-              {FOOD_EMOJI[item.item.name] || '\u{1F34F}'}
-            </div>
-          </Html>
-          <mesh rotation={[Math.PI / 2, 0, 0]} position={[0, 0.02, 0]}>
-            <ringGeometry args={[0.4, 0.45, 8]} />
-            <meshBasicMaterial color={FOOD_GROUP_COLORS[item.item.foodGroup]} transparent opacity={0.3} />
-          </mesh>
-        </group>
+      {itemList.map((item) => (
+        <SingleHealthyItem key={item.id} item={item} removeSelf={removeItem} />
       ))}
     </>
   );
